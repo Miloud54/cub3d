@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/19 12:08:28 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/19 12:31:56 by bde-la-p         ###   ########.fr       */
+/*   Created: 2025/11/19 12:32:29 by bde-la-p          #+#    #+#             */
+/*   Updated: 2025/11/19 12:32:42 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-int	main(int ac, char **av)
+void	free_map(char **map)
 {
-	(void)ac;
-	(void)av;
-	t_game	game;
-	
-	if (!init_game(&game))
-		return (free_map(game.map), 1);
-	ft_memset(&game, 0, sizeof(t_game));
-	mlx_loop(game.mlx);
+	int		i;
+
+	i = 0;
+	while (map && map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
 }
