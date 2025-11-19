@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:24:58 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/19 12:34:15 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:46:56 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,19 @@ static int	init_window(t_game *game)
 	int		width;
 	int		height;
 
-	width = game->map_width * TILE_SIZE;
-	height = game->map_height * TILE_SIZE;
-	game->window = mlx_new_window(game->mlx, width, height, "so_long!");
+	// Utiliser des dimensions par défaut si la carte n'est pas encore chargée
+	if (game->map_width == 0 || game->map_height == 0)
+	{
+		width = 800;
+		height = 600;
+	}
+	else
+	{
+		width = game->map_width * TILE_SIZE;
+		height = game->map_height * TILE_SIZE;
+	}
+	//Fin de l'ajout pour tester l'ouverture de la window.
+	game->window = mlx_new_window(game->mlx, width, height, "cub3D");
 	if (!game->window)
 	{
 		write(2, "Error\nFailed to create new window\n", 34);

@@ -18,8 +18,9 @@ int	main(int ac, char **av)
 	(void)av;
 	t_game	game;
 	
+	ft_memset(&game, 0, sizeof(t_game));
 	if (!init_game(&game))
 		return (free_map(game.map), 1);
-	ft_memset(&game, 0, sizeof(t_game));
 	mlx_loop(game.mlx);
+	return (0);
 }
