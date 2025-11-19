@@ -41,8 +41,10 @@ typedef struct	s_game
 
 int		init_game(t_game *game);
 void	free_map(char **map);
+int		print_error(char *msg);
 int		is_valid_extension(char *filename);
 int		handle_input(int keycode, t_game *game);
 int		close_game(t_game *game);
+char	**load_map(const char *filename);
 
 #endif

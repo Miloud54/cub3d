@@ -24,3 +24,9 @@ void	free_map(char **map)
 	}
 	free(map);
 }
+
+int	print_error(char *msg)
+{
+	ft_putendl_fd(msg, 2);
+	return (0);
+}

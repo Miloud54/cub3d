@@ -27,10 +27,15 @@ static int	validate_args(int ac, char **av)
 int	main(int ac, char **av)
 {
 	t_game	game;
+	char	**map;
 	
 	ft_memset(&game, 0, sizeof(t_game));
 	if (!validate_args(ac, av))
 		return (1);
+	map = load_map(av[1]);
+	if (!map)
+		return (1);
+	ft_free_split(&map);
 	if (!init_game(&game))
 		return (free_map(game.map), 1);
 	mlx_key_hook(game.window, handle_input, &game);
