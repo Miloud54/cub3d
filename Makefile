@@ -1,42 +1,41 @@
-NAME			= cub3d
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g
+NAME			= cub3D
+CC				= cc
+CFLAGS			= -Wall -Wextra -Werror -g
 
-SRC_DIR		= srcs
-OBJ_DIR		= objs
+SRC_DIR			= srcs
+OBJ_DIR			= objs
 
-LIBFT_DIR	= libft
-MLX_DIR		= minilibx-linux
+LIBFT_DIR		= libft
+MLX_DIR			= minilibx-linux
 
 INCLUDE_DIRS	= -Iinc -I$(LIBFT_DIR)/inc -I$(MLX_DIR)
-MLX_FLAGS	= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+MLX_FLAGS		= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 
-SRCS		= $(shell find $(SRC_DIR) -name "*.c" -print)
-OBJS		= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+SRC_DIR			= srcs
+OBJ_DIR			= objs
 
-LIBFT		= $(LIBFT_DIR)/libft.a
-MLX_LIB		= $(MLX_DIR)/libmlx.a
+OBJ_DIRS = $(OBJ_DIR)/srcs $(OBJ_DIR)/srcs
 
-MAP			?= maps/valid/map1.cub
-INVALID_MAPS_DIR	= maps/invalid
-INVALID_MAPS	= \
-	$(INVALID_MAPS_DIR)/config_after_map.cub \
-	$(INVALID_MAPS_DIR)/empty_map.cub \
-	$(INVALID_MAPS_DIR)/invalid_caracters.cub \
-	$(INVALID_MAPS_DIR)/invalid_format.cub \
-	$(INVALID_MAPS_DIR)/invalid_identifier.cub \
-	$(INVALID_MAPS_DIR)/invalid_path.cub \
-	$(INVALID_MAPS_DIR)/missing_walls.cub \
-	$(INVALID_MAPS_DIR)/multiple_exits.cub \
-	$(INVALID_MAPS_DIR)/multiple_players.cub \
-	$(INVALID_MAPS_DIR)/no_ceiling.cub \
-	$(INVALID_MAPS_DIR)/no_exit.cub \
-	$(INVALID_MAPS_DIR)/no_item.cub \
-	$(INVALID_MAPS_DIR)/no_player.cub \
-	$(INVALID_MAPS_DIR)/non_rectangular.cub \
-	$(INVALID_MAPS_DIR)/rgb_out_of_range.cub \
-	$(INVALID_MAPS_DIR)/space.cub \
-	$(INVALID_MAPS_DIR)/wrong.dada
+
+SRC_FILES		= \
+				$(SRC_DIR)/main.c \
+
+INVALID_MAPS = $(INVALID_MAPS_DIRS)/empty_map.cub \
+               $(INVALID_MAPS_DIRS)/invalid_caracters.cub \
+               $(INVALID_MAPS_DIRS)/invalid_format.cub \
+               $(INVALID_MAPS_DIRS)/invalid_path.cub \
+               $(INVALID_MAPS_DIRS)/missing_walls.cub \
+               $(INVALID_MAPS_DIRS)/multiple_exits.cub \
+               $(INVALID_MAPS_DIRS)/multiple_players.cub \
+               $(INVALID_MAPS_DIRS)/no_exit.cub \
+               $(INVALID_MAPS_DIRS)/no_player.cub \
+               $(INVALID_MAPS_DIRS)/no_item.cub \
+               $(INVALID_MAPS_DIRS)/space.cub \
+               $(INVALID_MAPS_DIRS)/donot_exist.cub \
+			   $(INVALID_MAPS_DIRS)/wrong.dada \
+
+LIBFT			= $(LIBFT_DIR)/libft.a
+MLX_LIB			= $(MLX_DIR)/libmlx.a
 
 all: $(NAME)
 
@@ -56,13 +55,6 @@ $(MLX_LIB):
 run: $(NAME)
 	./$(NAME) $(MAP)
 
-test_invalid: $(NAME)
-	@for file in $(INVALID_MAPS); do \
-		echo ""; \
-		echo "Testing $$file"; \
-		./$(NAME) $$file || true; \
-	done
-
 clean:
 	$(MAKE) -C $(LIBFT_DIR) clean
 	-$(MAKE) -C $(MLX_DIR) clean
@@ -74,4 +66,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re run test_invalid
+.PHONY: all clean fclean re run
