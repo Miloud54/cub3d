@@ -21,9 +21,9 @@ SRC_FILES		= \
 				$(SRC_DIR)/main.c \
 				$(SRC_DIR)/map_init.c \
 				$(SRC_DIR)/utils.c \
-				$(SRC_DIR)/check_extension.c \
 				$(SRC_DIR)/handle_input.c \
 				$(SRC_DIR)/close.c \
+				$(SRC_DIR)/parsing/check_extension.c \
 
 OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)
 
