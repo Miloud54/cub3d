@@ -14,11 +14,15 @@ MLX_FLAGS		= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
 SRC_DIR			= srcs
 OBJ_DIR			= objs
 
-OBJ_DIRS = $(OBJ_DIR)/srcs $(OBJ_DIR)/srcs
+OBJ_DIRS = $(OBJ_DIR)/srcs
 
 
 SRC_FILES		= \
 				$(SRC_DIR)/main.c \
+				$(SRC_DIR)/map_init.c \
+				$(SRC_DIR)/utils.c \
+
+OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)
 
 INVALID_MAPS = $(INVALID_MAPS_DIRS)/empty_map.cub \
                $(INVALID_MAPS_DIRS)/invalid_caracters.cub \
@@ -42,7 +46,7 @@ all: $(NAME)
 $(NAME): $(LIBFT) $(MLX_LIB) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c $< -o $@
 
