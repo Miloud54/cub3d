@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/19 14:03:34 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/19 16:05:39 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,40 @@
 # define MAX_MAP_WIDTH 32
 # define MAX_MAP_HEIGHT 17
 
+typedef struct	s_textures
+{
+	char	*north;
+	char	*south;
+	char	*west;
+	char	*east;
+}	t_textures;
+
 typedef struct	s_game
 {
-	void	*mlx;
-	void	*window;
-	char	**map;
-	int		map_width;
-	int		map_height;
-	void	*useless;
+	void		*mlx;
+	void		*window;
+	char		**map;
+	int			map_width;
+	int			map_height;
+	t_textures	textures;
+	void		*useless;
 }	t_game;
 
 int		init_game(t_game *game);
-void	free_map(char **map);
 int		print_error(char *msg);
 int		is_valid_extension(char *filename);
 int		handle_input(int keycode, t_game *game);
 int		close_game(t_game *game);
 char	**load_map(const char *filename);
+
+//Parsing/check_textures functions:
+int		parse_textures(const char *filename, t_textures *textures);
+int		validate_textures(t_textures *textures);
+int		file_exists(const char *path);
+
+//Freeing functions:
+void	free_map(char **map);
+void	free_textures(t_textures *textures);
+void	cleanup_game(t_game *game);
 
 #endif

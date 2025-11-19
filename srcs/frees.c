@@ -1,0 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   frees.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/19 16:04:16 by bde-la-p          #+#    #+#             */
+/*   Updated: 2025/11/19 16:04:44 by bde-la-p         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/cub3d.h"
+
+void	free_map(char **map)
+{
+	int		i;
+
+	i = 0;
+	while (map && map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
+}
+
+void	free_textures(t_textures *textures)
+{
+	if (textures->north)
+		free(textures->north);
+	if (textures->south)
+		free(textures->south);
+	if (textures->west)
+		free(textures->west);
+	if (textures->east)
+		free(textures->east);
+	ft_memset(textures, 0, sizeof(t_textures));
+}
+
+void	cleanup_game(t_game *game)
+{
+	if (game->map)
+		free_map(game->map);
+	free_textures(&game->textures);
+}
