@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:08:28 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/19 14:54:52 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/19 16:14:15 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,36 @@ static int	validate_args(int ac, char **av)
 	}
 	if (!is_valid_extension(av[1]))
 		return (0);
+	if (!file_exists(av[1]))
+		return (print_error("File does not exist"));
 	return (1);
 }
 
 int	main(int ac, char **av)
 {
 	t_game	game;
-	char	**map;
 	
 	ft_memset(&game, 0, sizeof(t_game));
 	if (!validate_args(ac, av))
 		return (1);
-	map = load_map(av[1]);
-	if (!map)
+	game.map = load_map(av[1]);
+	if (!game.map)
 		return (1);
-	ft_free_split(&map);
+	// Parser et valider les textures --- probablement a remettre ailleurs dans un check general du parsing !
+	if (!parse_textures(av[1], &game.textures) || !validate_textures(&game.textures))
+	{
+		cleanup_game(&game);
+		return (1);
+	}
+	
 	if (!init_game(&game))
-		return (free_map(game.map), 1);
+	{
+		cleanup_game(&game);
+		return (1);
+	}
 	mlx_key_hook(game.window, handle_input, &game);
 	mlx_hook(game.window, 17, 0, close_game, &game);
 	mlx_loop(game.mlx);
+	free_textures(&game.textures);
 	return (0);
 }

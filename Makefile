@@ -23,8 +23,12 @@ SRC_FILES		= \
 				$(SRC_DIR)/utils.c \
 				$(SRC_DIR)/handle_input.c \
 				$(SRC_DIR)/close.c \
+				$(SRC_DIR)/frees.c \
 				$(SRC_DIR)/parsing/check_extension.c \
 				$(SRC_DIR)/parsing/parsing.c \
+				$(SRC_DIR)/parsing/check_textures.c \
+				$(SRC_DIR)/parsing/check_file_existence.c \
+
 
 OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)
 
