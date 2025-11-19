@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/19 12:33:50 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:03:34 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,13 @@ typedef struct	s_game
 	char	**map;
 	int		map_width;
 	int		map_height;
+	void	*useless;
 }	t_game;
 
-int	init_game(t_game *game);
+int		init_game(t_game *game);
 void	free_map(char **map);
+int		is_valid_extension(char *filename);
+int		handle_input(int keycode, t_game *game);
+int		close_game(t_game *game);
 
 #endif
