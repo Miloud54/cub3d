@@ -91,5 +91,7 @@ int	parse_colors(const char *filename, int *floor_color, int *ceiling_color)
 		return (print_error("Missing floor color"));
 	if (!ceiling_found)
 		return (print_error("Missing ceiling color"));
+	if (*floor_color == *ceiling_color)
+		return (print_error("Floor and ceiling colors must differ"));
 	return (1);
 }
