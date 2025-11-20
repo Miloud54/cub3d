@@ -6,13 +6,15 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 14:32:54 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/19 16:16:16 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/20 14:09:01 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-// Extrait le chemin de texture d'une ligne
+// Extracts the texture to the path from the line by skipping the id, spaces, 
+// going to the end of the path, skipping spaces at the end and finally using
+// ft_substr to extract the path.
 static char	*extract_texture_path(char *line)
 {
 	int		i;
@@ -20,19 +22,15 @@ static char	*extract_texture_path(char *line)
 	int		end;
 	char	*path;
 
-	// Passer l'identifiant (NO, SO, WE, EA)
 	i = 0;
 	while (line[i] && !ft_isspace(line[i]))
 		i++;
-	// Passer les espaces
 	while (line[i] && ft_isspace(line[i]))
 		i++;
 	start = i;
-	// Aller jusqu'à la fin du chemin
 	while (line[i] && line[i] != '\n' && line[i] != '\r')
 		i++;
 	end = i;
-	// Enlever les espaces à la fin
 	while (end > start && ft_isspace(line[end - 1]))
 		end--;
 	if (end <= start)
@@ -41,11 +39,11 @@ static char	*extract_texture_path(char *line)
 	return (path);
 }
 
-// Parse une ligne de texture et l'assigne à la bonne direction
+// Parses a texture line with previous function and assigns it to the
+// corresponding direction
 static int	parse_texture_line(char *line, t_textures *textures)
 {
 	char	*path;
-
 	path = extract_texture_path(line);
 	if (!path)
 		return (print_error("Invalid texture path format"));
@@ -124,7 +122,7 @@ int	parse_textures(const char *filename, t_textures *textures)
 	return (1);
 }
 
-// Valide que toutes les textures sont présentes, différentes et existent
+// Validates that all textures are present, different and exist
 int	validate_textures(t_textures *textures)
 {
 	// Vérifier que toutes les textures sont présentes
@@ -149,4 +147,3 @@ int	validate_textures(t_textures *textures)
 		return (print_error("East texture file not found"));
 	return (1);
 }
-
