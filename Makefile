@@ -28,6 +28,7 @@ SRC_FILES		= \
 				$(SRC_DIR)/parsing/parsing.c \
 				$(SRC_DIR)/parsing/parsing_utils.c \
 				$(SRC_DIR)/parsing/check_textures.c \
+				$(SRC_DIR)/parsing/check_textures_utils.c \
 				$(SRC_DIR)/parsing/check_colors.c \
 				$(SRC_DIR)/parsing/check_colors_utils.c \
 				$(SRC_DIR)/parsing/check_file_existence.c \
