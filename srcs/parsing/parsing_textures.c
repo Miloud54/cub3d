@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_textures.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emiliedidier <emiliedidier@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 14:32:54 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/20 16:24:29 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/20 20:53:58 by emiliedidie      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-// Extracts the texture to the path from the line by skipping the id, spaces, 
+// Extracts the texture to the path from the line by skipping the id, spaces,
 // going to the end of the path, skipping spaces at the end and finally using
 // ft_substr to extract the path.
 static char	*extract_texture_path(char *line)
@@ -145,3 +145,4 @@ int	validate_textures(t_textures *textures)
 		return (print_error("East texture file not found"));
 	return (1);
 }
+
