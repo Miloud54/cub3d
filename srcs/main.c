@@ -33,9 +33,11 @@ int	main(int ac, char **av)
 	ft_memset(&game, 0, sizeof(t_game));
 	if (!validate_args(ac, av))
 		return (1);
-	game.map = load_map(av[1]);
-	if (!game.map)
+	if (!parse_map(av[1], &game) || !validate_map_structure(&game))
+	{
+		cleanup_game(&game);
 		return (1);
+	}
 	// Parser et valider les textures --- probablement a remettre ailleurs dans un check general du parsing !
 	if (!parse_textures(av[1], &game.textures) || !validate_textures(&game.textures))
 	{
