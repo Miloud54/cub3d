@@ -1,5 +1,7 @@
 #include "../inc/cub3d.h"
 
+#define COLOR_WHITESPACES " \t\n\r\v\f"
+
 static int	component_from_part(char *part, int *value)
 {
 	char	*trimmed;
@@ -51,4 +53,18 @@ int	parse_rgb_triplet(char *value_str, int *out_color)
 		return (0);
 	*out_color = (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
 	return (1);
+}
+
+int	parse_color_line(char *line, char identifier, int *target_color)
+{
+	char	*values;
+
+	values = skip_spaces(line + 1);
+	if (*values == '\0')
+	{
+		if (identifier == 'F')
+			return (print_error("Missing floor color values"));
+		return (print_error("Missing ceiling color values"));
+	}
+	return (parse_rgb_triplet(values, target_color));
 }

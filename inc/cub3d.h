@@ -6,7 +6,7 @@
 /*   By: emiliedidier <emiliedidier@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/20 12:16:38 by emiliedidie      ###   ########.fr       */
+/*   Updated: 2025/11/20 16:53:37 by emiliedidie      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,25 +51,53 @@ typedef struct	s_game
 	void		*useless;
 }	t_game;
 
+typedef struct s_color
+{
+	int	*floor_color;
+	int	*ceiling_color;
+	int	floor_found;
+	int	ceiling_found;
+}	t_color;
+
+typedef struct s_map
+{
+	int	started;
+	int	ended;
+	int	height;
+	int	width;
+}	t_map;
+
 int		init_game(t_game *game);
 int		print_error(char *msg);
-int		is_valid_extension(char *filename);
 int		handle_input(int keycode, t_game *game);
 int		close_game(t_game *game);
-char	**load_map(const char *filename);
 
-//Parsing/parsing_utils functions:
-int is_numeric_string(char *str);
+// Parsing utils
+int		is_numeric_string(char *str);
 char	*skip_spaces(char *str);
 
-//Parsing/check_colors functions:
+// Parsing colors
 int		parse_colors(const char *filename, int *floor_color, int *ceiling_color);
+int		parse_color_line(char *line, char identifier, int *target_color);
 int		parse_rgb_triplet(char *value_str, int *out_color);
 
-//Parsing/check_textures functions:
+// Parsing map
+int		parse_map(const char *filename, t_game *game);
+int		is_map_identifier(char *line);
+int		validate_map_line(char *line);
+char	*dup_map_line(char *line);
+int		append_map_line(t_list **lines, char *line, int *max_width);
+char	**list_to_array(t_list *lines, int height);
+int		validate_map_structure(t_game *game);
+
+// Parsing textures
 int		parse_textures(const char *filename, t_textures *textures);
 int		validate_textures(t_textures *textures);
+
+// Parsing files
 int		file_exists(const char *path);
+int		is_valid_extension(char *filename);
+
 
 //Freeing functions:
 void	free_map(char **map);

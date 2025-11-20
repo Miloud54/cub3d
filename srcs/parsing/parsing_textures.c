@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_textures.c                                   :+:      :+:    :+:   */
+/*   parsing_textures.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -149,4 +149,3 @@ int	validate_textures(t_textures *textures)
 		return (print_error("East texture file not found"));
 	return (1);
 }
-
