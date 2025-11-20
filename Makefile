@@ -25,22 +25,16 @@ SRC_FILES		= \
 				$(SRC_DIR)/close.c \
 				$(SRC_DIR)/frees.c \
 				$(SRC_DIR)/parsing/check_extension.c \
+				$(SRC_DIR)/parsing/check_file_existence.c \
 				$(SRC_DIR)/parsing/parsing_utils.c \
-<<<<<<< HEAD
 				$(SRC_DIR)/parsing/parsing_textures.c \
+				$(SRC_DIR)/parsing/parsing_textures_utils.c \
 				$(SRC_DIR)/parsing/parsing_colors.c \
 				$(SRC_DIR)/parsing/parsing_colors_utils.c \
 				$(SRC_DIR)/parsing/parsing_map.c \
 				$(SRC_DIR)/parsing/parsing_map_storage.c \
 				$(SRC_DIR)/parsing/parsing_map_utils.c \
-				$(SRC_DIR)/parsing/parsing_map_validation.c \
-=======
-				$(SRC_DIR)/parsing/check_textures.c \
-				$(SRC_DIR)/parsing/check_textures_utils.c \
-				$(SRC_DIR)/parsing/check_colors.c \
-				$(SRC_DIR)/parsing/check_colors_utils.c \
->>>>>>> 6c96c6f93f22e378ab6f2d17f405e82af81c6f15
-				$(SRC_DIR)/parsing/check_file_existence.c \
+				$(SRC_DIR)/parsing/parsing_map_validation.c
 
 
 OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)
