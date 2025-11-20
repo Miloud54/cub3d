@@ -42,6 +42,11 @@ int	main(int ac, char **av)
 		cleanup_game(&game);
 		return (1);
 	}
+	if (!parse_colors(av[1], &game.floor_color, &game.ceiling_color))
+	{
+		cleanup_game(&game);
+		return (1);
+	}
 	
 	if (!init_game(&game))
 	{
