@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emiliedidier <emiliedidier@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/19 16:05:39 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/20 12:16:38 by emiliedidie      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define TILE_SIZE 64
 # define MAX_MAP_WIDTH 32
 # define MAX_MAP_HEIGHT 17
+# define COLOR_WHITESPACES " \t\n\r\v\f"
 
 typedef struct	s_textures
 {
@@ -45,6 +46,8 @@ typedef struct	s_game
 	int			map_width;
 	int			map_height;
 	t_textures	textures;
+	int			floor_color;
+	int			ceiling_color;
 	void		*useless;
 }	t_game;
 
@@ -54,6 +57,14 @@ int		is_valid_extension(char *filename);
 int		handle_input(int keycode, t_game *game);
 int		close_game(t_game *game);
 char	**load_map(const char *filename);
+
+//Parsing/parsing_utils functions:
+int is_numeric_string(char *str);
+char	*skip_spaces(char *str);
+
+//Parsing/check_colors functions:
+int		parse_colors(const char *filename, int *floor_color, int *ceiling_color);
+int		parse_rgb_triplet(char *value_str, int *out_color);
 
 //Parsing/check_textures functions:
 int		parse_textures(const char *filename, t_textures *textures);
