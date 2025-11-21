@@ -30,12 +30,11 @@ SRC_FILES		= \
 				$(SRC_DIR)/parsing/parsing_utils.c \
 				$(SRC_DIR)/parsing/parsing_textures.c \
 				$(SRC_DIR)/parsing/parsing_colors.c \
+				$(SRC_DIR)/parsing/parsing_colors_utils.c \
 				$(SRC_DIR)/parsing/parsing_scene.c \
 				$(SRC_DIR)/parsing/parsing_map_storage.c \
 				$(SRC_DIR)/parsing/parsing_map_utils.c \
 				$(SRC_DIR)/parsing/parsing_map_validation.c \
-				$(SRC_DIR)/parsing/parsing_scene_textures.c \
-				$(SRC_DIR)/parsing/parsing_scene_colors.c \
 				$(SRC_DIR)/parsing/parsing_scene_map.c
 
 

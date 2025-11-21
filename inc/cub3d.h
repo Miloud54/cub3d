@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/21 12:09:32 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/21 16:31:01 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,45 +70,34 @@ typedef struct s_scene
 	int			ceiling_found;
 }				t_scene;
 
-int	handle_texture_line(char *trimmed, t_game *game);
-int	handle_color_line(char *trimmed, t_scene *scene);
-int	looks_like_map_line(char *line);
-int	process_map_line(char *line, t_scene *scene);
-
 int				init_game(t_game *game);
 int				print_error(char *msg);
 int				handle_input(int keycode, t_game *game);
 int				close_game(t_game *game);
 int				render_map(t_game *game);
 
-// Parsing utils
+// Parsing
 int				is_numeric_string(char *str);
 char			*skip_spaces(char *str);
-
-// Scene parsing
-int				parse_scene(const char *filename, t_game *game);
-
-// Parsing colors
 int				parse_color_line(char *line, char identifier,
 					int *target_color);
 int				parse_rgb_triplet(char *value_str, int *out_color);
-
-// Parsing map
 int				is_map_identifier(char *line);
 int				validate_map_line(char *line);
 char			*dup_map_line(char *line);
 int				append_map_line(t_list **lines, char *line, int *max_width);
-char			**list_to_array(t_list *lines, int height);
+char			**list_to_array(t_list **lines, int height);
 int				validate_map_structure(t_game *game);
-
-// Parsing textures
 int				validate_textures(t_textures *textures);
-
-// Parsing files
+int				handle_texture_line(char *trimmed, t_game *game);
+int				handle_color_line(char *trimmed, t_scene *state);
+int				looks_like_map_line(char *line);
+int				process_map_line(char *line, t_scene *state);
 int				file_exists(const char *path);
 int				is_valid_extension(char *filename);
+int				parse_scene(const char *filename, t_game *game);
 
-// Freeing functions:
+// Freeing functions
 void			free_map(char **map);
 void			free_textures(t_textures *textures);
 void			cleanup_game(t_game *game);

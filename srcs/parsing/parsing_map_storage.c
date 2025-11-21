@@ -61,7 +61,7 @@ int	append_map_line(t_list **lines, char *line, int *max_width)
 	return (1);
 }
 
-char	**list_to_array(t_list *lines, int height)
+char	**list_to_array(t_list **lines, int height)
 {
 	char	**map;
 	int		i;
@@ -70,15 +70,15 @@ char	**list_to_array(t_list *lines, int height)
 	map = malloc(sizeof(char *) * (height + 1));
 	if (!map)
 	{
-		ft_lstclear(&lines, free);
+		ft_lstclear(lines, free);
 		return (NULL);
 	}
 	i = 0;
-	while (lines)
+	while (*lines)
 	{
-		map[i++] = lines->content;
-		tmp = lines;
-		lines = lines->next;
+		map[i++] = (*lines)->content;
+		tmp = *lines;
+		*lines = (*lines)->next;
 		free(tmp);
 	}
 	map[i] = NULL;
