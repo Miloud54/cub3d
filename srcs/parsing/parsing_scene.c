@@ -48,6 +48,8 @@ static int	finalize_scene(t_scene *scene)
 		return (print_error("Missing floor color"));
 	if (!scene->ceiling_found)
 		return (print_error("Missing ceiling color"));
+	if (scene->map_width > MAX_MAP_WIDTH || scene->map_height > MAX_MAP_HEIGHT)
+		return (print_error("Map dimensions exceed limits"));
 	if (scene->game->floor_color == scene->game->ceiling_color)
 		return (print_error("Floor and ceiling colors must differ"));
 	scene->game->map = list_to_array(&scene->map_lines, scene->map_height);
