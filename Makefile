@@ -21,6 +21,7 @@ SRC_FILES		= \
 				$(SRC_DIR)/main.c \
 				$(SRC_DIR)/map_init.c \
 				$(SRC_DIR)/utils.c \
+				$(SRC_DIR)/render.c \
 				$(SRC_DIR)/handle_input.c \
 				$(SRC_DIR)/close.c \
 				$(SRC_DIR)/frees.c \
@@ -28,13 +29,14 @@ SRC_FILES		= \
 				$(SRC_DIR)/parsing/check_file_existence.c \
 				$(SRC_DIR)/parsing/parsing_utils.c \
 				$(SRC_DIR)/parsing/parsing_textures.c \
-				$(SRC_DIR)/parsing/parsing_textures_utils.c \
 				$(SRC_DIR)/parsing/parsing_colors.c \
-				$(SRC_DIR)/parsing/parsing_colors_utils.c \
-				$(SRC_DIR)/parsing/parsing_map.c \
+				$(SRC_DIR)/parsing/parsing_scene.c \
 				$(SRC_DIR)/parsing/parsing_map_storage.c \
 				$(SRC_DIR)/parsing/parsing_map_utils.c \
-				$(SRC_DIR)/parsing/parsing_map_validation.c
+				$(SRC_DIR)/parsing/parsing_map_validation.c \
+				$(SRC_DIR)/parsing/parsing_scene_textures.c \
+				$(SRC_DIR)/parsing/parsing_scene_colors.c \
+				$(SRC_DIR)/parsing/parsing_scene_map.c
 
 
 OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)

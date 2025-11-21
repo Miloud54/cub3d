@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_map_validation.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emiliedidier <emiliedidier@student.42.f    +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 15:02:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/21 15:02:12 by emiliedidie      ###   ########.fr       */
+/*   Updated: 2025/11/21 12:18:04 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	is_void(char **map, int height, int row, int col)
 		return (1);
 	len = ft_strlen(map[row]);
 	if (col >= len)
-		return (1);
+		return (0); // treat missing columns as implicit walls
 	if (map[row][col] == ' ')
 		return (1);
 	return (0);
@@ -40,10 +40,9 @@ static int	validate_cell(char **map, int height, int row, int col)
 		return (print_error("Map not closed vertically"));
 	if (col == 0 || col >= len - 1)
 		return (print_error("Map not closed horizontally"));
-	if (is_void(map, height, row - 1, col)
-		|| is_void(map, height, row + 1, col)
-		|| is_void(map, height, row, col - 1)
-		|| is_void(map, height, row, col + 1))
+	if (is_void(map, height, row - 1, col) || is_void(map, height, row + 1, col)
+		|| is_void(map, height, row, col - 1) || is_void(map, height, row, col
+			+ 1))
 		return (print_error("Map has open space"));
 	return (1);
 }
@@ -61,8 +60,7 @@ static int	scan_map(t_game *game, int *player_count)
 		{
 			if (is_player(game->map[row][col]))
 				(*player_count)++;
-			if ((game->map[row][col] == '0'
-					|| is_player(game->map[row][col]))
+			if ((game->map[row][col] == '0' || is_player(game->map[row][col]))
 				&& !validate_cell(game->map, game->map_height, row, col))
 				return (0);
 			col++;
