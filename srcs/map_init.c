@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:24:58 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/19 13:46:56 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/21 12:18:39 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,9 @@ static int	safe_mlx_init(t_game *game)
 
 static int	init_window(t_game *game)
 {
-	int		width;
-	int		height;
+	int	width;
+	int	height;
 
-	// Utiliser des dimensions par défaut si la carte n'est pas encore chargée
 	if (game->map_width == 0 || game->map_height == 0)
 	{
 		width = 800;
@@ -39,7 +38,6 @@ static int	init_window(t_game *game)
 		width = game->map_width * TILE_SIZE;
 		height = game->map_height * TILE_SIZE;
 	}
-	//Fin de l'ajout pour tester l'ouverture de la window.
 	game->window = mlx_new_window(game->mlx, width, height, "cub3D");
 	if (!game->window)
 	{

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_map_storage.c                                :+:      :+:    :+:   */
+/*   parsing_map_storage.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emiliedidier <emiliedidier@student.42.f    +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:12:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/21 14:12:12 by emiliedidie      ###   ########.fr       */
+/*   Updated: 2025/11/21 12:17:51 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,8 @@ int	validate_map_line(char *line)
 	i = 0;
 	while (line[i] && line[i] != '\n' && line[i] != '\r')
 	{
-		if (line[i] != '0' && line[i] != '1' && line[i] != ' '
-			&& line[i] != 'N' && line[i] != 'S'
-			&& line[i] != 'E' && line[i] != 'W')
+		if (line[i] != '0' && line[i] != '1' && line[i] != ' ' && line[i] != 'N'
+			&& line[i] != 'S' && line[i] != 'E' && line[i] != 'W')
 			return (0);
 		i++;
 	}

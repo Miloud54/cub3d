@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_file_existence.c                             :+:      :+:    :+:   */
+/*   parsing_scene_map.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/19 15:31:30 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/21 12:17:46 by edidier          ###   ########.fr       */
+/*   Created: 2025/11/22 11:10:09 by edidier           #+#    #+#             */
+/*   Updated: 2025/11/21 12:18:07 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-int	file_exists(const char *path)
+int	looks_like_map_line(char *line)
 {
-	int fd;
+	int	i;
 
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
+	i = 0;
+	while (line[i] && line[i] != '\n' && line[i] != '\r')
+	{
+		if (line[i] != ' ' && line[i] != '0' && line[i] != '1' && line[i] != 'N'
+			&& line[i] != 'S' && line[i] != 'E' && line[i] != 'W')
+			return (0);
+		i++;
+	}
+	return (i > 0);
+}
+
+int	process_map_line(char *line, t_scene *scene)
+{
+	if (!append_map_line(&scene->map_lines, line, &scene->map_width))
 		return (0);
-	close(fd);
+	scene->map_height++;
 	return (1);
 }

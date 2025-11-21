@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_map_utils.c                                  :+:      :+:    :+:   */
+/*   parsing_map_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emiliedidier <emiliedidier@student.42.f    +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 13:22:41 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/21 13:22:41 by emiliedidie      ###   ########.fr       */
+/*   Updated: 2025/11/21 12:17:55 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ int	is_map_identifier(char *line)
 		return (1);
 	if (ft_strncmp(line, "EA", 2) == 0 && has_identifier_suffix(line, 2))
 		return (1);
-	if (line[0] == 'F' && (line[1] == '\0' || line[1] == '\n'
-			|| line[1] == '\r' || ft_isspace(line[1])))
+	if (line[0] == 'F' && (line[1] == '\0' || line[1] == '\n' || line[1] == '\r'
+			|| ft_isspace(line[1])))
 		return (1);
-	if (line[0] == 'C' && (line[1] == '\0' || line[1] == '\n'
-			|| line[1] == '\r' || ft_isspace(line[1])))
+	if (line[0] == 'C' && (line[1] == '\0' || line[1] == '\n' || line[1] == '\r'
+			|| ft_isspace(line[1])))
 		return (1);
 	return (0);
 }
