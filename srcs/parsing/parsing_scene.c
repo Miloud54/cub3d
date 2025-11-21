@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 10:12:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/21 12:18:11 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/21 16:24:42 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	finalize_scene(t_scene *scene)
 		return (print_error("Missing ceiling color"));
 	if (scene->game->floor_color == scene->game->ceiling_color)
 		return (print_error("Floor and ceiling colors must differ"));
-	scene->game->map = list_to_array(scene->map_lines, scene->map_height);
+	scene->game->map = list_to_array(&scene->map_lines, scene->map_height);
 	if (!scene->game->map)
 		return (print_error("Failed to allocate map"));
 	scene->game->map_height = scene->map_height;
@@ -65,9 +65,9 @@ static void	clear_map_lines(t_list **lines)
 
 int	parse_scene(const char *filename, t_game *game)
 {
-	int		fd;
-	char	*line;
-	char	*tmp;
+	int				fd;
+	char			*line;
+	char			*tmp;
 	t_scene	scene;
 
 	fd = open(filename, O_RDONLY);
