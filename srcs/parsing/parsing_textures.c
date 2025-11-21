@@ -30,6 +30,11 @@ static int	store_texture_path(char **target, char *content,
 	path = ft_substr(content, 0, len);
 	if (!path)
 		return (print_error("Failed to allocate texture path"));
+	if (!is_valid_extension_xpm(path))
+	{
+		free(path);
+		return (0);
+	}
 	*target = path;
 	return (1);
 }
@@ -71,6 +76,11 @@ int	validate_textures(t_textures *textures)
 		|| ft_strcmp(textures->south, textures->east) == 0
 		|| ft_strcmp(textures->west, textures->east) == 0)
 		return (print_error("All textures must be different"));
+	if (!is_valid_extension_xpm(textures->north)
+		|| !is_valid_extension_xpm(textures->south)
+		|| !is_valid_extension_xpm(textures->west)
+		|| !is_valid_extension_xpm(textures->east))
+		return (0);
 	if (!file_exists(textures->north))
 		return (print_error("North texture file not found"));
 	if (!file_exists(textures->south))

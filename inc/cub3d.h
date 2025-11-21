@@ -97,6 +97,7 @@ int				looks_like_map_line(char *line);
 int				process_map_line(char *line, t_scene *state);
 int				file_exists(const char *path);
 int				is_valid_extension(char *filename);
+int				is_valid_extension_xpm(char *filename);
 int				parse_scene(const char *filename, t_game *game);
 
 // Freeing functions
