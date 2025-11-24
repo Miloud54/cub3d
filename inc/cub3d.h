@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/21 17:18:52 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 15:39:28 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,17 @@ typedef struct s_textures
 	char		*east;
 }				t_textures;
 
+typedef struct s_player
+{
+	double		x;			// Position X dans la map (coordonnées réelles)
+	double		y;			// Position Y dans la map (coordonnées réelles)
+	double		dir_x;		// Vecteur direction X
+	double		dir_y;		// Vecteur direction Y  
+	double		plane_x;	// Vecteur plan caméra X (perpendiculaire à direction)
+	double		plane_y;	// Vecteur plan caméra Y (perpendiculaire à direction)
+	char		start_dir;	// Direction initiale (N/S/E/W)
+}				t_player;
+
 typedef struct s_game
 {
 	void		*mlx;
@@ -48,6 +59,7 @@ typedef struct s_game
 	t_textures	textures;
 	int			floor_color;
 	int			ceiling_color;
+	t_player	player;
 	void		*useless;
 }				t_game;
 
@@ -97,6 +109,8 @@ int				file_exists(const char *path);
 int				is_valid_extension(char *filename);
 int				is_valid_extension_xpm(char *filename);
 int				parse_scene(const char *filename, t_game *game);
+int				extract_player_position(t_game *game);
+int				is_exterior_space(t_game *game, int row, int col);
 
 // Freeing functions
 void			free_map(char **map);
