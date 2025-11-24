@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 15:39:28 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:56:14 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@
 # define MAX_MAP_WIDTH 32
 # define MAX_MAP_HEIGHT 17
 # define COLOR_WHITESPACES " \t\n\r\v\f"
+
+// Contrôles joueur
+# define MOVE_SPEED 0.1
+# define ROT_SPEED 0.05
+
+// Keycodes (Linux/X11)
+# define KEY_ESC 65307
+# define KEY_W 119
+# define KEY_S 115
+# define KEY_A 97
+# define KEY_D 100
+# define KEY_LEFT 65361
+# define KEY_RIGHT 65363
 
 typedef struct s_textures
 {
