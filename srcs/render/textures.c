@@ -13,7 +13,7 @@
 #include "../../inc/cub3d.h"
 
 static int	load_one_texture(t_game *game, char *path, void **img, char **addr,
-		int *w, int *h)
+		int *w, int *h, int *line_len)
 {
 	void	*image;
 	char	*data;
@@ -22,7 +22,7 @@ static int	load_one_texture(t_game *game, char *path, void **img, char **addr,
 	if (!image)
 		return (print_error("Failed to load texture image"));
 	data = mlx_get_data_addr(image, &game->textures.bpp,
-			&game->textures.line_len, &game->textures.endian);
+			line_len, &game->textures.endian);
 	if (!data)
 	{
 		mlx_destroy_image(game->mlx, image);
@@ -37,19 +37,19 @@ int	load_textures(t_game *game)
 {
 	if (!load_one_texture(game, game->textures.north, &game->textures.north_img,
 			&game->textures.north_addr, &game->textures.north_w,
-			&game->textures.north_h))
+			&game->textures.north_h, &game->textures.north_line_len))
 		return (0);
 	if (!load_one_texture(game, game->textures.south, &game->textures.south_img,
 			&game->textures.south_addr, &game->textures.south_w,
-			&game->textures.south_h))
+			&game->textures.south_h, &game->textures.south_line_len))
 		return (0);
 	if (!load_one_texture(game, game->textures.west, &game->textures.west_img,
 			&game->textures.west_addr, &game->textures.west_w,
-			&game->textures.west_h))
+			&game->textures.west_h, &game->textures.west_line_len))
 		return (0);
 	if (!load_one_texture(game, game->textures.east, &game->textures.east_img,
 			&game->textures.east_addr, &game->textures.east_w,
-			&game->textures.east_h))
+			&game->textures.east_h, &game->textures.east_line_len))
 		return (0);
 	return (1);
 }

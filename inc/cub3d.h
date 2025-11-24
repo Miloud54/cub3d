@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 16:49:00 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 17:00:59 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,12 @@ typedef struct s_textures
 	int			west_h;
 	int			east_w;
 	int			east_h;
+	int			north_line_len;
+	int			south_line_len;
+	int			west_line_len;
+	int			east_line_len;
 	int			bpp;
-	/* bits per pixel du buffer image (souvent 32 pour un RGBA packed).
-	Ça sert à avancer correctement dans le tableau de pixels */
-	int			line_len;
 	int			endian;
-	/* ordre des octets attendu par MLX dans ce buffer (0 = little endian,
-	1 = big endian). Combiné avec bpp et line_len,
-	ça dit comment lire/écrire chaque pixel */
 }				t_textures;
 
 typedef struct s_player
@@ -109,6 +107,14 @@ typedef struct s_player
 	double		plane_y;
 	char		start_dir;
 }				t_player;
+
+typedef struct s_texinfo
+{
+	char		*addr;
+	int			width;
+	int			height;
+	int			line_len;
+}				t_texinfo;
 
 typedef struct s_game
 {
@@ -123,6 +129,11 @@ typedef struct s_game
 	t_player	player;
 	int			floor_color;
 	int			ceiling_color;
+	void		*img;
+	char		*img_addr;
+	int			img_bpp;
+	int			img_line_len;
+	int			img_endian;
 	void		*useless;
 }				t_game;
 
@@ -151,14 +162,13 @@ int				handle_input(int keycode, t_game *game);
 int				close_game(t_game *game);
 int				render_map(t_game *game);
 int				render_frame(t_game *game);
-int				render_loop(t_game *game);
+int				render_loop(void *param);
 int				is_wall(t_game *game, int x, int y);
 void			ensure_player_defaults(t_game *game);
 void			init_ray(t_game *game, int x, t_ray *ray);
 void			perform_dda(t_game *game, t_ray *ray);
 void			compute_draw_limits(t_game *game, t_ray *ray, t_draw *draw);
-int				get_wall_color(int side);
-void			draw_column(t_game *game, int x, t_draw *d, int side);
+void			draw_column(t_game *game, int x, t_draw *d, t_ray *ray);
 int				load_textures(t_game *game);
 void			destroy_texture_images(t_game *game);
 

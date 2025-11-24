@@ -20,6 +20,8 @@ int	render_frame(t_game *game)
 
 	if (!game->mlx || !game->window || !game->map)
 		return (0);
+	if (game->img_addr)
+		ft_bzero(game->img_addr, game->img_line_len * game->win_h);
 	ensure_player_defaults(game);
 	x = 0;
 	while (x < game->win_w)
@@ -27,14 +29,20 @@ int	render_frame(t_game *game)
 		init_ray(game, x, &ray);
 		perform_dda(game, &ray);
 		compute_draw_limits(game, &ray, &draw);
-		draw_column(game, x, &draw, ray.side);
+		draw_column(game, x, &draw, &ray);
 		x++;
 	}
+	mlx_clear_window(game->mlx, game->window);
+	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
+	mlx_do_sync(game->mlx);
 	return (1);
 }
 
-int	render_loop(t_game *game)
+int	render_loop(void *param)
 {
+	t_game	*game;
+
+	game = (t_game *)param;
 	render_frame(game);
 	return (0);
 }
