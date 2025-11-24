@@ -6,14 +6,14 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 16:20:24 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/21 17:06:25 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 15:54:50 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
 static int	store_texture_path(char **target, char *content,
-				char *duplicate_msg, char *missing_msg)
+		char *duplicate_msg, char *missing_msg)
 {
 	size_t	len;
 	char	*path;

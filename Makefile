@@ -21,7 +21,12 @@ SRC_FILES		= \
 				$(SRC_DIR)/main.c \
 				$(SRC_DIR)/map_init.c \
 				$(SRC_DIR)/utils.c \
-				$(SRC_DIR)/render.c \
+				$(SRC_DIR)/render/render.c \
+				$(SRC_DIR)/render/raycast.c \
+				$(SRC_DIR)/render/raycast_utils.c \
+				$(SRC_DIR)/render/raycast_dda.c \
+				$(SRC_DIR)/render/raycast_draw.c \
+				$(SRC_DIR)/render/textures.c \
 				$(SRC_DIR)/handle_input.c \
 				$(SRC_DIR)/close.c \
 				$(SRC_DIR)/frees.c \

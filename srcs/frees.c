@@ -40,6 +40,8 @@ void	free_textures(t_textures *textures)
 
 void	cleanup_game(t_game *game)
 {
+	if (game->mlx)
+		destroy_texture_images(game);
 	if (game->map)
 		free_map(game->map);
 	free_textures(&game->textures);

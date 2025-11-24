@@ -39,6 +39,8 @@ static int	init_window(t_game *game)
 		height = game->map_height * TILE_SIZE;
 	}
 	game->window = mlx_new_window(game->mlx, width, height, "cub3D");
+	game->win_w = width;
+	game->win_h = height;
 	if (!game->window)
 	{
 		write(2, "Error\nFailed to create new window\n", 34);
