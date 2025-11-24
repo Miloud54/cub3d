@@ -28,16 +28,9 @@ static int	init_window(t_game *game)
 	int	width;
 	int	height;
 
-	if (game->map_width == 0 || game->map_height == 0)
-	{
-		width = 800;
-		height = 600;
-	}
-	else
-	{
-		width = game->map_width * TILE_SIZE;
-		height = game->map_height * TILE_SIZE;
-	}
+	// Fixed window size for optimal performance
+	width = WINDOW_WIDTH;
+	height = WINDOW_HEIGHT;
 	game->window = mlx_new_window(game->mlx, width, height, "cub3D");
 	game->win_w = width;
 	game->win_h = height;
