@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 17:00:59 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 18:10:53 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,13 @@
 # define MAX_MAP_HEIGHT 17
 # define COLOR_WHITESPACES " \t\n\r\v\f"
 
-// Contrôles joueur
-# define MOVE_SPEED 0.1
-# define ROT_SPEED 0.05
+// Window dimensions
+# define WINDOW_WIDTH 1280
+# define WINDOW_HEIGHT 720
+
+// Contrôles joueur - Optimized for smooth gameplay
+# define MOVE_SPEED 0.15
+# define ROT_SPEED 0.08
 
 // Keycodes (Linux/X11)
 # define KEY_ESC 65307
