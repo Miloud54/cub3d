@@ -46,6 +46,13 @@ static int	init_window(t_game *game)
 		write(2, "Error\nFailed to create new window\n", 34);
 		return (0);
 	}
+	game->img = mlx_new_image(game->mlx, width, height);
+	if (!game->img)
+		return (print_error("Failed to create render buffer"));
+	game->img_addr = mlx_get_data_addr(game->img, &game->img_bpp,
+			&game->img_line_len, &game->img_endian);
+	if (!game->img_addr)
+		return (print_error("Failed to access render buffer"));
 	return (1);
 }
 
