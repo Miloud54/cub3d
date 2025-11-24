@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 15:02:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/24 15:55:26 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 16:11:57 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static int	is_wall_or_space(char **map, int height, int row, int col)
 
 static int	check_cell_closure(char **map, int height, int row, int col)
 {
+	// Pour chaque cellule de jeu (0 ou joueur), vérifier que toutes les directions adjacentes
+	// sont soit des murs/espaces, soit d'autres cellules valides
 	if (!is_wall_or_space(map, height, row - 1, col) && !is_valid_cell(map, height, row - 1, col))
 		return (0);
 	if (!is_wall_or_space(map, height, row + 1, col) && !is_valid_cell(map, height, row + 1, col))
@@ -61,6 +63,7 @@ static int	validate_borders(t_game *game)
 	int	len;
 	int	max_width;
 
+	// Trouver la largeur maximale
 	max_width = 0;
 	for (row = 0; row < game->map_height; row++)
 	{
@@ -68,6 +71,8 @@ static int	validate_borders(t_game *game)
 		if (len > max_width)
 			max_width = len;
 	}
+
+	// Vérifier que toutes les lignes qui contiennent du jeu ont la largeur complète
 	for (row = 0; row < game->map_height; row++)
 	{
 		len = ft_strlen(game->map[row]);
@@ -75,13 +80,17 @@ static int	validate_borders(t_game *game)
 		{
 			if (game->map[row][col] == '0' || is_player(game->map[row][col]))
 			{
+				// Si cette ligne contient du jeu, elle doit avoir la largeur maximale
 				if (len != max_width)
 					return (print_error("Map not rectangular: game lines must be complete"));
 				
+				// Vérifier que cette cellule n'est pas en bordure absolue
 				if (row == 0 || row == game->map_height - 1)
 					return (print_error("Map not closed: game space on border"));
 				if (col == 0 || col >= len - 1)
 					return (print_error("Map not closed: game space on border"));
+				
+				// Vérifier que cette cellule est correctement fermée
 				if (!check_cell_closure(game->map, game->map_height, row, col))
 					return (print_error("Map not closed: game space can escape"));
 			}
