@@ -1,7 +1,7 @@
 NO ./textures/wall4.xpm
 SO ./textures/wall2.xpm  
 WE ./textures/wall1.xpm
-EA ./textures/agffad
+EA ./textures/wall3.xpm
 
 C 225,30,0
 F 220,100,0
