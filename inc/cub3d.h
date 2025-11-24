@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 15:56:14 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/24 16:49:00 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,36 +43,86 @@
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 
+typedef struct s_ray
+{
+	double		camera_x;
+	double		ray_dir_x;
+	double		ray_dir_y;
+	int			map_x;
+	int			map_y;
+	double		side_dist_x;
+	double		side_dist_y;
+	double		delta_dist_x;
+	double		delta_dist_y;
+	int			step_x;
+	int			step_y;
+	int			side;
+	double		perp_wall_dist;
+}				t_ray;
+
+typedef struct s_draw
+{
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+}				t_draw;
+
 typedef struct s_textures
 {
 	char		*north;
 	char		*south;
 	char		*west;
 	char		*east;
+	void		*north_img;
+	void		*south_img;
+	void		*west_img;
+	void		*east_img;
+	char		*north_addr;
+	char		*south_addr;
+	char		*west_addr;
+	char		*east_addr;
+	int			north_w;
+	int			north_h;
+	int			south_w;
+	int			south_h;
+	int			west_w;
+	int			west_h;
+	int			east_w;
+	int			east_h;
+	int			bpp;
+	/* bits per pixel du buffer image (souvent 32 pour un RGBA packed).
+	Ça sert à avancer correctement dans le tableau de pixels */
+	int			line_len;
+	int			endian;
+	/* ordre des octets attendu par MLX dans ce buffer (0 = little endian,
+	1 = big endian). Combiné avec bpp et line_len,
+	ça dit comment lire/écrire chaque pixel */
 }				t_textures;
 
 typedef struct s_player
 {
-	double		x;			// Position X dans la map (coordonnées réelles)
-	double		y;			// Position Y dans la map (coordonnées réelles)
-	double		dir_x;		// Vecteur direction X
-	double		dir_y;		// Vecteur direction Y  
-	double		plane_x;	// Vecteur plan caméra X (perpendiculaire à direction)
-	double		plane_y;	// Vecteur plan caméra Y (perpendiculaire à direction)
-	char		start_dir;	// Direction initiale (N/S/E/W)
+	double		x;
+	double		y;
+	double		dir_x;
+	double		dir_y;
+	double		plane_x;
+	double		plane_y;
+	char		start_dir;
 }				t_player;
 
 typedef struct s_game
 {
 	void		*mlx;
 	void		*window;
+	int			win_w;
+	int			win_h;
 	char		**map;
 	int			map_width;
 	int			map_height;
 	t_textures	textures;
+	t_player	player;
 	int			floor_color;
 	int			ceiling_color;
-	t_player	player;
 	void		*useless;
 }				t_game;
 
@@ -100,6 +150,17 @@ int				print_error(char *msg);
 int				handle_input(int keycode, t_game *game);
 int				close_game(t_game *game);
 int				render_map(t_game *game);
+int				render_frame(t_game *game);
+int				render_loop(t_game *game);
+int				is_wall(t_game *game, int x, int y);
+void			ensure_player_defaults(t_game *game);
+void			init_ray(t_game *game, int x, t_ray *ray);
+void			perform_dda(t_game *game, t_ray *ray);
+void			compute_draw_limits(t_game *game, t_ray *ray, t_draw *draw);
+int				get_wall_color(int side);
+void			draw_column(t_game *game, int x, t_draw *d, int side);
+int				load_textures(t_game *game);
+void			destroy_texture_images(t_game *game);
 
 // Parsing
 int				is_numeric_string(char *str);
