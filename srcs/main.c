@@ -34,7 +34,7 @@ int	main(int ac, char **av)
 	if (!validate_args(ac, av))
 		return (1);
 	if (!parse_scene(av[1], &game) || !validate_map_structure(&game)
-		|| !validate_textures(&game.textures))
+		|| !validate_textures(&game.textures) || !extract_player_position(&game))
 	{
 		cleanup_game(&game);
 		return (1);

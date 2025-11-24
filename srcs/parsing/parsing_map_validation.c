@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 15:02:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/24 15:00:47 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:39:28 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,170 +17,149 @@ static int	is_player(char c)
 	return (c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
-static int	is_valid_cell(char **map, int height, int row, int col)
+// Marque les espaces accessibles depuis l'extérieur (flood-fill récursif)
+static void	mark_exterior_spaces(char **map, char **exterior_map, int height, int row, int col)
 {
 	int	len;
 
 	if (row < 0 || row >= height || col < 0)
-		return (0);
+		return;
 	len = ft_strlen(map[row]);
 	if (col >= len)
-		return (0);
-	return (map[row][col] == '0' || is_player(map[row][col]));
+		return;
+	
+	// Si déjà marqué ou si c'est un mur, arrêter
+	if (exterior_map[row][col] == 'X' || map[row][col] == '1')
+		return;
+	
+	// Marquer cette position comme extérieure
+	exterior_map[row][col] = 'X';
+	
+	// Continuer le flood-fill dans les 4 directions
+	mark_exterior_spaces(map, exterior_map, height, row - 1, col);
+	mark_exterior_spaces(map, exterior_map, height, row + 1, col);
+	mark_exterior_spaces(map, exterior_map, height, row, col - 1);
+	mark_exterior_spaces(map, exterior_map, height, row, col + 1);
 }
 
-static int	is_wall_or_space(char **map, int height, int row, int col)
+// Crée une map pour marquer les espaces extérieurs
+static char	**create_exterior_map(t_game *game)
 {
-	int	len;
-
-	if (row < 0 || row >= height || col < 0)
-		return (0);
-	len = ft_strlen(map[row]);
-	if (col >= len)
-		return (0);
-	return (map[row][col] == '1' || map[row][col] == ' ');
-}
-
-static int	check_cell_closure(char **map, int height, int row, int col)
-{
-	// Pour chaque cellule de jeu (0 ou joueur), vérifier que toutes les directions adjacentes
-	// sont soit des murs/espaces, soit d'autres cellules valides
-	if (!is_wall_or_space(map, height, row - 1, col) && !is_valid_cell(map, height, row - 1, col))
-		return (0);
-	if (!is_wall_or_space(map, height, row + 1, col) && !is_valid_cell(map, height, row + 1, col))
-		return (0);
-	if (!is_wall_or_space(map, height, row, col - 1) && !is_valid_cell(map, height, row, col - 1))
-		return (0);
-	if (!is_wall_or_space(map, height, row, col + 1) && !is_valid_cell(map, height, row, col + 1))
-		return (0);
-	return (1);
-}
-
-static int	validate_borders(t_game *game)
-{
-	int	row;
-	int	col;
-	int	len;
-	int	max_width;
-
-	// Trouver la largeur maximale
+	char	**exterior_map;
+	int		row;
+	int		col;
+	int		max_width;
+	
+	// Trouver largeur max et allouer
 	max_width = 0;
 	for (row = 0; row < game->map_height; row++)
 	{
-		len = ft_strlen(game->map[row]);
+		int len = ft_strlen(game->map[row]);
 		if (len > max_width)
 			max_width = len;
 	}
-
-	// Vérifier que toutes les lignes qui contiennent du jeu ont la largeur complète
+	
+	exterior_map = malloc(sizeof(char *) * (game->map_height + 1));
+	if (!exterior_map)
+		return (NULL);
+		
 	for (row = 0; row < game->map_height; row++)
 	{
-		len = ft_strlen(game->map[row]);
-		for (col = 0; col < len; col++)
+		exterior_map[row] = ft_calloc(max_width + 1, sizeof(char));
+		if (!exterior_map[row])
 		{
-			if (game->map[row][col] == '0' || is_player(game->map[row][col]))
-			{
-				// Si cette ligne contient du jeu, elle doit avoir la largeur maximale
-				if (len != max_width)
-					return (print_error("Map not rectangular: game lines must be complete"));
-				
-				// Vérifier que cette cellule n'est pas en bordure absolue
-				if (row == 0 || row == game->map_height - 1)
-					return (print_error("Map not closed: game space on border"));
-				if (col == 0 || col >= len - 1)
-					return (print_error("Map not closed: game space on border"));
-				
-				// Vérifier que cette cellule est correctement fermée
-				if (!check_cell_closure(game->map, game->map_height, row, col))
-					return (print_error("Map not closed: game space can escape"));
-			}
+			while (--row >= 0)
+				free(exterior_map[row]);
+			free(exterior_map);
+			return (NULL);
 		}
 	}
-	return (1);
+	exterior_map[game->map_height] = NULL;
+	
+	// Commencer flood-fill depuis tous les bords
+	for (row = 0; row < game->map_height; row++)
+	{
+		mark_exterior_spaces(game->map, exterior_map, game->map_height, row, 0); // Bord gauche
+		col = ft_strlen(game->map[row]) - 1;
+		if (col >= 0)
+			mark_exterior_spaces(game->map, exterior_map, game->map_height, row, col); // Bord droit
+	}
+	for (col = 0; col < max_width; col++)
+	{
+		mark_exterior_spaces(game->map, exterior_map, game->map_height, 0, col); // Bord haut
+		mark_exterior_spaces(game->map, exterior_map, game->map_height, game->map_height - 1, col); // Bord bas
+	}
+	
+	return (exterior_map);
 }
 
-static int	validate_rectangular_closure(t_game *game)
+// Libère la exterior_map
+static void	free_exterior_map(char **exterior_map, int height)
 {
-	int	row;
-	int	col;
-	int	len;
-	int	max_width;
-
-	// Trouver la largeur maximale
-	max_width = 0;
-	for (row = 0; row < game->map_height; row++)
-	{
-		len = ft_strlen(game->map[row]);
-		if (len > max_width)
-			max_width = len;
-	}
-
-	// Vérifier que les bordures du rectangle maximal sont des murs
-	// Première ligne
-	len = ft_strlen(game->map[0]);
-	if (len != max_width)
-		return (print_error("Map not properly closed: first line incomplete"));
-	for (col = 0; col < len; col++)
-		if (game->map[0][col] != '1' && game->map[0][col] != ' ')
-			return (print_error("Map not closed: top border must be walls"));
-
-	// Dernière ligne  
-	len = ft_strlen(game->map[game->map_height - 1]);
-	if (len != max_width)
-		return (print_error("Map not properly closed: last line incomplete"));
-	for (col = 0; col < len; col++)
-		if (game->map[game->map_height - 1][col] != '1' && game->map[game->map_height - 1][col] != ' ')
-			return (print_error("Map not closed: bottom border must be walls"));
-
-	// Colonnes gauche et droite
-	for (row = 0; row < game->map_height; row++)
-	{
-		len = ft_strlen(game->map[row]);
-		if (len > 0 && game->map[row][0] != '1' && game->map[row][0] != ' ')
-			return (print_error("Map not closed: left border must be walls"));
-		if (len == max_width && game->map[row][len - 1] != '1' && game->map[row][len - 1] != ' ')
-			return (print_error("Map not closed: right border must be walls"));
-		if (len < max_width)
-			return (print_error("Map not properly closed: incomplete line"));
-	}
-	return (1);
+	int row = 0;
+	while (row < height)
+		free(exterior_map[row++]);
+	free(exterior_map);
 }
 
-static int	is_void(char **map, int height, int row, int col)
+
+
+
+
+
+
+
+
+// Cette fonction sera remplacée par une version qui utilise exterior_map
+static int	is_void_with_exterior_check(char **map, char **exterior_map, int height, int row, int col)
 {
 	int	len;
 
+	// Hors limites = void
 	if (row < 0 || row >= height || col < 0)
 		return (1);
 	len = ft_strlen(map[row]);
 	if (col >= len)
-		return (0); // treat missing columns as implicit walls
-	// Les espaces sont traités comme des murs implicites, pas comme du vide
-	// Seuls les caractères inexistants (hors limites) sont considérés comme void
+		return (1);
+	
+	// Si c'est un mur, ce n'est pas void
+	if (map[row][col] == '1')
+		return (0);
+	
+	// Si c'est un espace marqué comme extérieur, c'est void
+	if (map[row][col] == ' ' && exterior_map[row][col] == 'X')
+		return (1);
+	
+	// Sinon (espace intérieur, sol, joueur), ce n'est pas void
 	return (0);
 }
 
-static int	validate_cell(char **map, int height, int row, int col)
+static int	validate_cell_with_exterior(char **map, char **exterior_map, int height, int row, int col)
 {
-	int	len;
-
-	len = ft_strlen(map[row]);
-	if (row == 0 || row == height - 1)
-		return (print_error("Map not closed vertically"));
-	if (col == 0 || col >= len - 1)
-		return (print_error("Map not closed horizontally"));
-	if (is_void(map, height, row - 1, col) || is_void(map, height, row + 1, col)
-		|| is_void(map, height, row, col - 1) || is_void(map, height, row, col
-			+ 1))
-		return (print_error("Map has open space"));
+	// Pour chaque cellule de jeu (0 ou joueur), vérifier qu'elle n'est pas adjacente au vide
+	if (is_void_with_exterior_check(map, exterior_map, height, row - 1, col) || 
+		is_void_with_exterior_check(map, exterior_map, height, row + 1, col) ||
+		is_void_with_exterior_check(map, exterior_map, height, row, col - 1) || 
+		is_void_with_exterior_check(map, exterior_map, height, row, col + 1))
+		return (print_error("Map not closed: player/floor space adjacent to exterior"));
 	return (1);
 }
 
-static int	scan_map(t_game *game, int *player_count)
-{
-	int	row;
-	int	col;
 
+
+int	validate_map_structure(t_game *game)
+{
+	char	**exterior_map;
+	int		player_count;
+	int		row;
+	int		col;
+
+	player_count = 0;
+	exterior_map = create_exterior_map(game);
+	if (!exterior_map)
+		return (print_error("Failed to create exterior map"));
+	
+	// Vérifier chaque cellule avec la nouvelle logique
 	row = 0;
 	while (row < game->map_height)
 	{
@@ -188,30 +167,56 @@ static int	scan_map(t_game *game, int *player_count)
 		while (game->map[row][col])
 		{
 			if (is_player(game->map[row][col]))
-				(*player_count)++;
-			// Valider seulement les cellules '0' et les joueurs, pas les espaces ni les murs
+			{
+				player_count++;
+				// Vérifier que le joueur n'est pas dans un espace extérieur
+				if (game->map[row][col] != '0' && game->map[row][col] != '1')
+				{
+					if (game->map[row][col] == ' ' && exterior_map[row][col] == 'X')
+					{
+						free_exterior_map(exterior_map, game->map_height);
+						return (print_error("Player cannot be in exterior space"));
+					}
+				}
+			}
+			
 			if ((game->map[row][col] == '0' || is_player(game->map[row][col]))
-				&& !validate_cell(game->map, game->map_height, row, col))
+				&& !validate_cell_with_exterior(game->map, exterior_map, game->map_height, row, col))
+			{
+				free_exterior_map(exterior_map, game->map_height);
 				return (0);
+			}
 			col++;
 		}
 		row++;
 	}
-	return (1);
-}
-
-int	validate_map_structure(t_game *game)
-{
-	int	player_count;
-
-	player_count = 0;
-	if (!validate_rectangular_closure(game))
-		return (0);
-	if (!validate_borders(game))
-		return (0);
-	if (!scan_map(game, &player_count))
-		return (0);
+	
+	free_exterior_map(exterior_map, game->map_height);
+	
 	if (player_count != 1)
 		return (print_error("Map must contain exactly one player"));
 	return (1);
+}
+
+// Fonction helper pour le rendu - détermine si un espace est extérieur
+int	is_exterior_space(t_game *game, int row, int col)
+{
+	char	**exterior_map;
+	int		result;
+
+	if (row < 0 || row >= game->map_height || col < 0)
+		return (1);
+	if (col >= (int)ft_strlen(game->map[row]))
+		return (1);
+	if (game->map[row][col] != ' ')
+		return (0); // Seuls les espaces peuvent être extérieurs
+	
+	exterior_map = create_exterior_map(game);
+	if (!exterior_map)
+		return (1); // En cas d'erreur, considérer comme extérieur
+	
+	result = (exterior_map[row][col] == 'X');
+	free_exterior_map(exterior_map, game->map_height);
+	
+	return (result);
 }
