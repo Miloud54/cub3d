@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:24:58 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/21 12:18:39 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 16:34:00 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ static int	init_window(t_game *game)
 		height = game->map_height * TILE_SIZE;
 	}
 	game->window = mlx_new_window(game->mlx, width, height, "cub3D");
+	game->win_w = width;
+	game->win_h = height;
 	if (!game->window)
 	{
 		write(2, "Error\nFailed to create new window\n", 34);

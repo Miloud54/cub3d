@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:08:28 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/21 12:18:23 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/24 16:32:01 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ int	main(int ac, char **av)
 	if (!validate_args(ac, av))
 		return (1);
 	if (!parse_scene(av[1], &game) || !validate_map_structure(&game)
-		|| !validate_textures(&game.textures) || !extract_player_position(&game))
+		|| !validate_textures(&game.textures)
+		|| !extract_player_position(&game))
 	{
 		cleanup_game(&game);
 		return (1);
@@ -44,14 +45,20 @@ int	main(int ac, char **av)
 		cleanup_game(&game);
 		return (1);
 	}
-	if (!render_map(&game))
+	if (!load_textures(&game))
+	{
+		cleanup_game(&game);
+		return (1);
+	}
+	if (!render_frame(&game))
 	{
 		cleanup_game(&game);
 		return (1);
 	}
 	mlx_key_hook(game.window, handle_input, &game);
+	mlx_loop_hook(game.mlx, render_loop, &game);
 	mlx_hook(game.window, 17, 0, close_game, &game);
 	mlx_loop(game.mlx);
-	free_textures(&game.textures);
+	cleanup_game(&game);
 	return (0);
 }

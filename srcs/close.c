@@ -14,7 +14,6 @@
 
 int	close_game(t_game *game)
 {
-	game->useless = 0;
+	cleanup_game(game);
 	exit(0);
-	return (0);
 }
