@@ -26,8 +26,8 @@ static int	is_void(char **map, int height, int row, int col)
 	len = ft_strlen(map[row]);
 	if (col >= len)
 		return (0); // treat missing columns as implicit walls
-	if (map[row][col] == ' ')
-		return (1);
+	// Les espaces sont traités comme des murs implicites, pas comme du vide
+	// Seuls les caractères inexistants (hors limites) sont considérés comme void
 	return (0);
 }
 
@@ -60,6 +60,7 @@ static int	scan_map(t_game *game, int *player_count)
 		{
 			if (is_player(game->map[row][col]))
 				(*player_count)++;
+			// Valider seulement les cellules '0' et les joueurs, pas les espaces ni les murs
 			if ((game->map[row][col] == '0' || is_player(game->map[row][col]))
 				&& !validate_cell(game->map, game->map_height, row, col))
 				return (0);
