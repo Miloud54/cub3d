@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast_dda.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 12:05:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 16:28:21 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 18:23:18 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@
 
 void	perform_dda(t_game *game, t_ray *ray)
 {
-	int	hit;
-
-	hit = 0;
+	int (hit) = 0;
 	while (!hit)
 	{
 		if (ray->side_dist_x < ray->side_dist_y)
