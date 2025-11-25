@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 18:10:53 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/25 13:41:57 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,10 @@
 # define MAX_MAP_WIDTH 32
 # define MAX_MAP_HEIGHT 17
 # define COLOR_WHITESPACES " \t\n\r\v\f"
-
-// Window dimensions
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 720
-
-// Contrôles joueur - Optimized for smooth gameplay
-# define MOVE_SPEED 0.15
-# define ROT_SPEED 0.08
-
-// Keycodes (Linux/X11)
+# define MOVE_SPEED 0.4
+# define ROT_SPEED 0.4
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
@@ -131,6 +125,12 @@ typedef struct s_game
 	int			map_height;
 	t_textures	textures;
 	t_player	player;
+	int			key_w;
+	int			key_s;
+	int			key_a;
+	int			key_d;
+	int			key_left;
+	int			key_right;
 	int			floor_color;
 	int			ceiling_color;
 	void		*img;
@@ -162,7 +162,9 @@ typedef struct s_scene
 
 int				init_game(t_game *game);
 int				print_error(char *msg);
-int				handle_input(int keycode, t_game *game);
+int				key_press(int keycode, t_game *game);
+int				key_release(int keycode, t_game *game);
+void			handle_input(t_game *game);
 int				close_game(t_game *game);
 int				render_map(t_game *game);
 int				render_frame(t_game *game);
