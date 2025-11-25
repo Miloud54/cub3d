@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:08:28 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/24 16:32:01 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 15:28:56 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	main(int ac, char **av)
 	}
 	mlx_hook(game.window, 2, 1L << 0, key_press, &game);
 	mlx_hook(game.window, 3, 1L << 1, key_release, &game);
+	mlx_mouse_hook(game.window, mouse_hook, &game);
 	mlx_loop_hook(game.mlx, render_loop, &game);
 	mlx_expose_hook(game.window, render_loop, &game);
 	render_frame(&game);

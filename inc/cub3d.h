@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 14:16:08 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 15:28:56 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define WINDOW_HEIGHT 720
 # define MOVE_SPEED 0.06
 # define ROT_SPEED 0.05
+# define MOUSE_SENSITIVITY 0.003
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
@@ -133,6 +134,11 @@ typedef struct s_game
 	int			key_d;
 	int			key_left;
 	int			key_right;
+	// Mouse control variables
+	int			mouse_x;
+	int			mouse_y;
+	int			last_mouse_x;
+	int			mouse_enabled;
 	int			floor_color;
 	int			ceiling_color;
 	void		*img;
@@ -172,6 +178,8 @@ int				init_game(t_game *game);
 int				print_error(char *msg);
 int				key_press(int keycode, t_game *game);
 int				key_release(int keycode, t_game *game);
+int				mouse_hook(int button, int x, int y, t_game *game);
+void			mouse_look(t_game *game);
 void			handle_input(t_game *game);
 int				close_game(t_game *game);
 int				render_map(t_game *game);
