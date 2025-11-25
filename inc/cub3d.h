@@ -210,6 +210,9 @@ int				parse_scene(const char *filename, t_game *game);
 int				extract_player_position(t_game *game);
 int				is_exterior_space(t_game *game, int row, int col);
 void			free_exterior_map(char **exterior_map, int height);
+void			move_forward_backward(t_game *game, int forward);
+void			move_left_right(t_game *game, int right);
+void			rotate_camera(t_game *game, int right);
 
 // Freeing functions
 void			free_map(char **map);
