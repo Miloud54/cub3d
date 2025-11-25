@@ -43,6 +43,7 @@ int	render_loop(void *param)
 	t_game	*game;
 
 	game = (t_game *)param;
+	handle_input(game);
 	render_frame(game);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:56:02 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/24 16:50:47 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 13:31:24 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,23 +80,59 @@ static void	rotate_camera(t_game *game, int right)
 		* cos(rot_speed);
 }
 
-int	handle_input(int keycode, t_game *game)
+static void	process_input(t_game *game)
+{
+	if (game->key_w)
+		move_forward_backward(game, 1);
+	if (game->key_s)
+		move_forward_backward(game, 0);
+	if (game->key_a)
+		move_left_right(game, 0);
+	if (game->key_d)
+		move_left_right(game, 1);
+	if (game->key_left)
+		rotate_camera(game, 0);
+	if (game->key_right)
+		rotate_camera(game, 1);
+}
+
+int	key_press(int keycode, t_game *game)
 {
 	if (keycode == KEY_ESC)
 		return (close_game(game));
-	else if (keycode == KEY_W)
-		move_forward_backward(game, 1);
+	if (keycode == KEY_W)
+		game->key_w = 1;
 	else if (keycode == KEY_S)
-		move_forward_backward(game, 0);
+		game->key_s = 1;
 	else if (keycode == KEY_A)
-		move_left_right(game, 0);
+		game->key_a = 1;
 	else if (keycode == KEY_D)
-		move_left_right(game, 1);
+		game->key_d = 1;
 	else if (keycode == KEY_LEFT)
-		rotate_camera(game, 0);
+		game->key_left = 1;
 	else if (keycode == KEY_RIGHT)
-		rotate_camera(game, 1);
-	// Redessiner après mouvement
-	render_frame(game);
+		game->key_right = 1;
 	return (0);
+}
+
+int	key_release(int keycode, t_game *game)
+{
+	if (keycode == KEY_W)
+		game->key_w = 0;
+	else if (keycode == KEY_S)
+		game->key_s = 0;
+	else if (keycode == KEY_A)
+		game->key_a = 0;
+	else if (keycode == KEY_D)
+		game->key_d = 0;
+	else if (keycode == KEY_LEFT)
+		game->key_left = 0;
+	else if (keycode == KEY_RIGHT)
+		game->key_right = 0;
+	return (0);
+}
+
+void	handle_input(t_game *game)
+{
+	process_input(game);
 }

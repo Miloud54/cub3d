@@ -50,7 +50,8 @@ int	main(int ac, char **av)
 		cleanup_game(&game);
 		return (1);
 	}
-	mlx_key_hook(game.window, handle_input, &game);
+	mlx_hook(game.window, 2, 1L << 0, key_press, &game);
+	mlx_hook(game.window, 3, 1L << 1, key_release, &game);
 	mlx_loop_hook(game.mlx, render_loop, &game);
 	mlx_expose_hook(game.window, render_loop, &game);
 	render_frame(&game);
