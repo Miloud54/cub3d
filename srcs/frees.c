@@ -51,6 +51,8 @@ void	cleanup_game(t_game *game)
 	}
 	if (game->map)
 		free_map(game->map);
+	if (game->exterior_map)
+		free_exterior_map(game->exterior_map, game->map_height);
 	if (game->mlx)
 	{
 		mlx_destroy_display(game->mlx);

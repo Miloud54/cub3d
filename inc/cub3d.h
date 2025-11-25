@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 13:41:57 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 14:16:08 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,16 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include "cub3d_bonus.h"
 
 # define TILE_SIZE 64
-# define MAX_MAP_WIDTH 32
-# define MAX_MAP_HEIGHT 17
+# define MAX_MAP_WIDTH 640
+# define MAX_MAP_HEIGHT 480
 # define COLOR_WHITESPACES " \t\n\r\v\f"
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 720
-# define MOVE_SPEED 0.4
-# define ROT_SPEED 0.4
+# define MOVE_SPEED 0.06
+# define ROT_SPEED 0.05
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
@@ -123,6 +124,7 @@ typedef struct s_game
 	char		**map;
 	int			map_width;
 	int			map_height;
+	char		**exterior_map;
 	t_textures	textures;
 	t_player	player;
 	int			key_w;
@@ -148,6 +150,12 @@ typedef struct s_map
 	int			height;
 	int			width;
 }				t_map;
+
+typedef struct s_point
+{
+	int			row;
+	int			col;
+}				t_point;
 
 typedef struct s_scene
 {
@@ -201,6 +209,7 @@ int				is_valid_extension_xpm(char *filename);
 int				parse_scene(const char *filename, t_game *game);
 int				extract_player_position(t_game *game);
 int				is_exterior_space(t_game *game, int row, int col);
+void			free_exterior_map(char **exterior_map, int height);
 
 // Freeing functions
 void			free_map(char **map);

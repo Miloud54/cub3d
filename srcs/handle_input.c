@@ -30,6 +30,29 @@ static int	is_valid_position(t_game *game, double x, double y)
 	return (1);
 }
 
+static int	can_stand(t_game *game, double x, double y)
+{
+	double	offsets[2];
+	int		i;
+	int		j;
+
+	offsets[0] = -PLAYER_COLLISION_RADIUS;
+	offsets[1] = PLAYER_COLLISION_RADIUS;
+	i = 0;
+	while (i < 2)
+	{
+		j = 0;
+		while (j < 2)
+		{
+			if (!is_valid_position(game, x + offsets[i], y + offsets[j]))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
+
 static void	move_forward_backward(t_game *game, int forward)
 {
 	double	new_x;
@@ -39,9 +62,9 @@ static void	move_forward_backward(t_game *game, int forward)
 	move_speed = forward ? MOVE_SPEED : -MOVE_SPEED;
 	new_x = game->player.x + game->player.dir_x * move_speed;
 	new_y = game->player.y + game->player.dir_y * move_speed;
-	if (is_valid_position(game, new_x, game->player.y))
+	if (can_stand(game, new_x, game->player.y))
 		game->player.x = new_x;
-	if (is_valid_position(game, game->player.x, new_y))
+	if (can_stand(game, game->player.x, new_y))
 		game->player.y = new_y;
 }
 
@@ -54,9 +77,9 @@ static void	move_left_right(t_game *game, int right)
 	move_speed = right ? MOVE_SPEED : -MOVE_SPEED;
 	new_x = game->player.x + game->player.plane_x * move_speed;
 	new_y = game->player.y + game->player.plane_y * move_speed;
-	if (is_valid_position(game, new_x, game->player.y))
+	if (can_stand(game, new_x, game->player.y))
 		game->player.x = new_x;
-	if (is_valid_position(game, game->player.x, new_y))
+	if (can_stand(game, game->player.x, new_y))
 		game->player.y = new_y;
 }
 
