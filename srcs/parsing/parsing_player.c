@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_player.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 18:00:00 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/24 16:55:41 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/25 15:18:47 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
-
-/* ************************************************************************** */
-/*                         init_player_direction                              */
-/* ************************************************************************** */
 
 static void	set_east_west_direction(t_player *player)
 {
@@ -54,15 +50,6 @@ static void	init_player_direction(t_player *player)
 		set_east_west_direction(player);
 }
 
-/* ************************************************************************** */
-/*                          extract_player_position                           */
-/* ************************************************************************** */
-
-// Extracts player's position from the map and initializes it
-// It stocks position as the middle of the tile ("+0.5"), and then
-// it puts a free space instead of the player in the map. To finish,
-// it initializes the direction vectors by calling init_player_direction()
-
 static int	process_player_tile(t_game *game, int row, int col, int *found)
 {
 	if (*found)
@@ -93,8 +80,6 @@ static int	scan_row_for_player(t_game *game, int row, int *found)
 	return (1);
 }
 
-// Main function: extracts player from map and initializes position/direction
-// Validates single player existence, centers position in tile, sets up vectors
 int	extract_player_position(t_game *game)
 {
 	int	row;

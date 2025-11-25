@@ -28,6 +28,7 @@ SRC_FILES		= \
 				$(SRC_DIR)/render/raycast_dda.c \
 				$(SRC_DIR)/render/raycast_draw.c \
 				$(SRC_DIR)/render/textures.c \
+				$(SRC_DIR)/movement.c \
 				$(SRC_DIR)/handle_input.c \
 				$(SRC_DIR)/close.c \
 				$(SRC_DIR)/frees.c \
@@ -70,6 +71,9 @@ all: $(NAME)
 $(NAME): $(LIBFT) $(MLX_LIB) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $@
 
+bonus: $(LIBFT) $(MLX_LIB) $(OBJS_BONUS)
+	$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(MLX_FLAGS) -o $(NAME_BONUS)
+
 DEPS			= inc/cub3d.h
 DEPS_BONUS		= inc/cub3d.h inc/cub3d_bonus.h
 
@@ -87,14 +91,6 @@ $(LIBFT):
 $(MLX_LIB):
 	$(MAKE) -C $(MLX_DIR)
 
-all: $(NAME)
-
-$(NAME): $(LIBFT) $(MLX_LIB) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $@
-
-bonus: $(LIBFT) $(MLX_LIB) $(OBJS_BONUS)
-	$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(MLX_FLAGS) -o $(NAME_BONUS)
-
 run: $(NAME)
 	./$(NAME) $(MAP)
 
@@ -110,4 +106,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re run
+.PHONY: all clean fclean re run bonus
