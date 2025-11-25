@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:00:00 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 15:00:00 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 16:36:43 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,5 @@
 ** Collision radius used to prevent the player from clipping into walls.
 ** Increase slightly to give more space; decrease to allow tighter cornering.
 */
-# define PLAYER_COLLISION_RADIUS 0.2
 
 #endif
