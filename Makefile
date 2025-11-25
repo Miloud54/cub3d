@@ -1,4 +1,5 @@
 NAME			= cub3D
+NAME_BONUS		= cub3D_bonus
 CC				= cc
 CFLAGS			= -Wall -Wextra -Werror -g
 
@@ -45,6 +46,7 @@ SRC_FILES		= \
 
 
 OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)
+OBJS_BONUS		= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.bonus.o)
 
 INVALID_MAPS = $(INVALID_MAPS_DIRS)/empty_map.cub \
                $(INVALID_MAPS_DIRS)/invalid_caracters.cub \
@@ -68,7 +70,14 @@ all: $(NAME)
 $(NAME): $(LIBFT) $(MLX_LIB) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $@
 
-$(OBJ_DIR)/$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+DEPS			= inc/cub3d.h
+DEPS_BONUS		= inc/cub3d.h inc/cub3d_bonus.h
+
+$(OBJ_DIR)/$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c $< -o $@
+
+$(OBJ_DIR)/$(SRC_DIR)/%.bonus.o: $(SRC_DIR)/%.c $(DEPS_BONUS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c $< -o $@
 
@@ -77,6 +86,14 @@ $(LIBFT):
 
 $(MLX_LIB):
 	$(MAKE) -C $(MLX_DIR)
+
+all: $(NAME)
+
+$(NAME): $(LIBFT) $(MLX_LIB) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $@
+
+bonus: $(LIBFT) $(MLX_LIB) $(OBJS_BONUS)
+	$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(MLX_FLAGS) -o $(NAME_BONUS)
 
 run: $(NAME)
 	./$(NAME) $(MAP)
@@ -89,6 +106,7 @@ clean:
 fclean: clean
 	$(MAKE) -C $(LIBFT_DIR) fclean
 	rm -f $(NAME)
+	rm -f $(NAME_BONUS)
 
 re: fclean all
 
