@@ -6,50 +6,54 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:40:00 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 15:40:00 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 17:37:32 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
-
-static int	is_valid_position(t_game *game, double x, double y)
-{
-	int	map_x;
-	int	map_y;
-
-	map_x = (int)x;
-	map_y = (int)y;
-	if (map_y < 0 || map_y >= game->map_height || map_x < 0)
-		return (0);
-	if (map_x >= (int)ft_strlen(game->map[map_y]))
-		return (0);
-	if (game->map[map_y][map_x] == '1')
-		return (0);
-	if (game->map[map_y][map_x] == ' '
-		&& is_exterior_space(game, map_y, map_x))
-		return (0);
-	return (1);
-}
 
 static int	can_stand(t_game *game, double x, double y)
 {
 	double	offsets[2];
 	int		i;
 	int		j;
+	int		map_x;
+	int		map_y;
 
 	offsets[0] = -PLAYER_COLLISION_RADIUS;
 	offsets[1] = PLAYER_COLLISION_RADIUS;
 	i = 0;
-	while (i < 2)
+	if (BONUS)
 	{
-		j = 0;
-		while (j < 2)
+		while (i < 2)
 		{
-			if (!is_valid_position(game, x + offsets[i], y + offsets[j]))
-				return (0);
-			j++;
+			j = 0;
+			while (j < 2)
+			{
+				map_x = (int)(x + offsets[i]);
+				map_y = (int)(y + offsets[j]);
+				if (map_y < 0 || map_y >= game->map_height || map_x < 0)
+					return (0);
+				if (map_x >= (int)ft_strlen(game->map[map_y]))
+					return (0);
+				if (game->map[map_y][map_x] == '1')
+					return (0);
+				if (game->map[map_y][map_x] == ' ' && is_exterior_space(game,
+						map_y, map_x))
+					return (0);
+				j++;
+			}
+			i++;
 		}
-		i++;
+	}
+	else
+	{
+		if (x < 0.0 || y < 0.0)
+			return (0);
+		if (y >= game->map_height)
+			return (0);
+		if (x >= game->map_width)
+			return (0);
 	}
 	return (1);
 }
@@ -105,6 +109,6 @@ void	rotate_camera(t_game *game, int right)
 	old_plane_x = game->player.plane_x;
 	game->player.plane_x = game->player.plane_x * cos(rot_speed)
 		- game->player.plane_y * sin(rot_speed);
-	game->player.plane_y = old_plane_x * sin(rot_speed)
-		+ game->player.plane_y * cos(rot_speed);
+	game->player.plane_y = old_plane_x * sin(rot_speed) + game->player.plane_y
+		* cos(rot_speed);
 }

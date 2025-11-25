@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 16:37:14 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 17:35:38 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
-# include "cub3d_bonus.h"
 
 # ifndef BONUS
 #  define BONUS 1
