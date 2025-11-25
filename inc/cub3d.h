@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 15:28:56 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/25 17:35:38 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
-# include "cub3d_bonus.h"
+
+# ifndef BONUS
+#  define BONUS 1
+# endif
 
 # define TILE_SIZE 64
 # define MAX_MAP_WIDTH 640
@@ -42,6 +45,7 @@
 # define KEY_D 100
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
+# define PLAYER_COLLISION_RADIUS 0.2
 
 typedef struct s_ray
 {

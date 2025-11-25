@@ -1,109 +1,91 @@
-NAME			= cub3D
-NAME_BONUS		= cub3D_bonus
-CC				= cc
-CFLAGS			= -Wall -Wextra -Werror -g
+NAME		= cub3D
 
-SRC_DIR			= srcs
-OBJ_DIR			= objs
+BONUS		= 0
 
-LIBFT_DIR		= libft
-MLX_DIR			= minilibx-linux
+CC			= cc
+CFLAGS		= -Werror -Wextra -Wall -g
 
-INCLUDE_DIRS	= -Iinc -I$(LIBFT_DIR)/inc -I$(MLX_DIR)
-MLX_FLAGS		= -L$(MLX_DIR) -lmlx -lXext -lX11 -lm -lz
+MLX_PATH	= minilibx-linux/
+MLX_NAME	= libmlx.a
+MLX			= $(MLX_PATH)$(MLX_NAME)
 
-SRC_DIR			= srcs
-OBJ_DIR			= objs
+LIBFT_PATH	= libft/
+LIBFT_NAME	= libft.a
+LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 
-OBJ_DIRS = $(OBJ_DIR)/srcs
+SRC_PATH 	= ./srcs/
+SRC			= 	main.c \
+				map_init.c \
+				utils.c \
+				render/render.c \
+				render/raycast.c \
+				render/raycast_utils.c \
+				render/raycast_dda.c \
+				render/raycast_draw.c \
+				render/textures.c \
+				movement.c \
+				handle_input.c \
+				close.c \
+				frees.c \
+				parsing/check_extension.c \
+				parsing/check_file_existence.c \
+				parsing/parsing_utils.c \
+				parsing/parsing_textures.c \
+				parsing/parsing_colors.c \
+				parsing/parsing_colors_utils.c \
+				parsing/parsing_scene.c \
+				parsing/parsing_map_storage.c \
+				parsing/parsing_map_utils.c \
+				parsing/parsing_map_validation.c \
+				parsing/parsing_scene_map.c \
+				parsing/parsing_player.c
 
+SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
-SRC_FILES		= \
-				$(SRC_DIR)/main.c \
-				$(SRC_DIR)/map_init.c \
-				$(SRC_DIR)/utils.c \
-				$(SRC_DIR)/render/render.c \
-				$(SRC_DIR)/render/raycast.c \
-				$(SRC_DIR)/render/raycast_utils.c \
-				$(SRC_DIR)/render/raycast_dda.c \
-				$(SRC_DIR)/render/raycast_draw.c \
-				$(SRC_DIR)/render/textures.c \
-				$(SRC_DIR)/movement.c \
-				$(SRC_DIR)/handle_input.c \
-				$(SRC_DIR)/close.c \
-				$(SRC_DIR)/frees.c \
-				$(SRC_DIR)/parsing/check_extension.c \
-				$(SRC_DIR)/parsing/check_file_existence.c \
-				$(SRC_DIR)/parsing/parsing_utils.c \
-				$(SRC_DIR)/parsing/parsing_textures.c \
-				$(SRC_DIR)/parsing/parsing_colors.c \
-				$(SRC_DIR)/parsing/parsing_colors_utils.c \
-				$(SRC_DIR)/parsing/parsing_scene.c \
-				$(SRC_DIR)/parsing/parsing_map_storage.c \
-				$(SRC_DIR)/parsing/parsing_map_utils.c \
-				$(SRC_DIR)/parsing/parsing_map_validation.c \
-				$(SRC_DIR)/parsing/parsing_scene_map.c \
-				$(SRC_DIR)/parsing/parsing_player.c
+OBJ_DIR_BASE	= ./objs
+ifeq ($(BONUS),1)
+OBJ_PATH		= $(OBJ_DIR_BASE)_bonus
+else
+OBJ_PATH		= $(OBJ_DIR_BASE)
+endif
 
+OBJ			= $(SRC:.c=.o)
+OBJS		= $(addprefix $(OBJ_PATH)/, $(OBJ))
 
-OBJS			= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.o)
-OBJS_BONUS		= $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/$(SRC_DIR)/%.bonus.o)
+INC			=	-I ./inc/\
+				-I ./libft/\
+				-I ./minilibx-linux/
 
-INVALID_MAPS = $(INVALID_MAPS_DIRS)/empty_map.cub \
-               $(INVALID_MAPS_DIRS)/invalid_caracters.cub \
-               $(INVALID_MAPS_DIRS)/invalid_format.cub \
-               $(INVALID_MAPS_DIRS)/invalid_path.cub \
-               $(INVALID_MAPS_DIRS)/missing_walls.cub \
-               $(INVALID_MAPS_DIRS)/multiple_exits.cub \
-               $(INVALID_MAPS_DIRS)/multiple_players.cub \
-               $(INVALID_MAPS_DIRS)/no_exit.cub \
-               $(INVALID_MAPS_DIRS)/no_player.cub \
-               $(INVALID_MAPS_DIRS)/no_item.cub \
-               $(INVALID_MAPS_DIRS)/space.cub \
-               $(INVALID_MAPS_DIRS)/donot_exist.cub \
-			   $(INVALID_MAPS_DIRS)/wrong.dada \
+all: $(OBJ_PATH) $(MLX) $(LIBFT) $(NAME)
 
-LIBFT			= $(LIBFT_DIR)/libft.a
-MLX_LIB			= $(MLX_DIR)/libmlx.a
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
 
-all: $(NAME)
-
-$(NAME): $(LIBFT) $(MLX_LIB) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $@
-
-bonus: $(LIBFT) $(MLX_LIB) $(OBJS_BONUS)
-	$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(MLX_FLAGS) -o $(NAME_BONUS)
-
-DEPS			= inc/cub3d.h
-DEPS_BONUS		= inc/cub3d.h inc/cub3d_bonus.h
-
-$(OBJ_DIR)/$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
+$(OBJ_PATH)/%.o: $(SRC_PATH)%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c $< -o $@
+	$(CC) $(CFLAGS) -DBONUS=$(BONUS) -c $< -o $@ $(INC)
 
-$(OBJ_DIR)/$(SRC_DIR)/%.bonus.o: $(SRC_DIR)/%.c $(DEPS_BONUS)
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c $< -o $@
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) -DBONUS=$(BONUS) $(OBJS) -o $@ $(INC) $(LIBFT) $(MLX) -lXext -lX11 -lm
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	make -sC $(LIBFT_PATH)
 
-$(MLX_LIB):
-	$(MAKE) -C $(MLX_DIR)
+$(MLX):
+	make -sC $(MLX_PATH)
 
-run: $(NAME)
-	./$(NAME) $(MAP)
+bonus:
+	make all BONUS=1
 
 clean:
-	$(MAKE) -C $(LIBFT_DIR) clean
-	-$(MAKE) -C $(MLX_DIR) clean
-	rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR_BASE) $(OBJ_DIR_BASE)_bonus
+	make -C $(LIBFT_PATH) clean
+	make -C $(MLX_PATH) clean
 
 fclean: clean
-	$(MAKE) -C $(LIBFT_DIR) fclean
 	rm -f $(NAME)
-	rm -f $(NAME_BONUS)
+	make -C $(LIBFT_PATH) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re run bonus
+.PHONY: all re clean fclean bonus
