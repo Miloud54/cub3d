@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_scene.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 10:12:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/21 16:48:18 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 18:27:22 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,29 @@ static void	clear_map_lines(t_list **lines)
 	ft_lstclear(lines, free);
 }
 
+static int	process_file_lines(int fd, t_scene *scene, char **tmp)
+{
+	char	*line;
+
+	line = get_next_line(fd, tmp);
+	while (line != NULL)
+	{
+		if (!process_scene_line(line, scene))
+		{
+			free(line);
+			return (0);
+		}
+		free(line);
+		line = get_next_line(fd, tmp);
+	}
+	return (1);
+}
+
 int	parse_scene(const char *filename, t_game *game)
 {
-	int				fd;
-	char			*line;
-	char			*tmp;
-	t_scene	scene;
+	int			fd;
+	char		*tmp;
+	t_scene		scene;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -78,17 +95,12 @@ int	parse_scene(const char *filename, t_game *game)
 	ft_bzero(&scene, sizeof(scene));
 	scene.game = game;
 	tmp = NULL;
-	while ((line = get_next_line(fd, &tmp)) != NULL)
+	if (!process_file_lines(fd, &scene, &tmp))
 	{
-		if (!process_scene_line(line, &scene))
-		{
-			free(line);
-			free_gnl_tmp(&tmp);
-			clear_map_lines(&scene.map_lines);
-			close(fd);
-			return (0);
-		}
-		free(line);
+		free_gnl_tmp(&tmp);
+		clear_map_lines(&scene.map_lines);
+		close(fd);
+		return (0);
 	}
 	free_gnl_tmp(&tmp);
 	close(fd);
