@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 17:35:38 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 18:39:34 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,9 @@ void			free_exterior_map(char **exterior_map, int height);
 void			move_forward_backward(t_game *game, int forward);
 void			move_left_right(t_game *game, int right);
 void			rotate_camera(t_game *game, int right);
+
+// Minimap
+void			render_minimap(t_game *game);
 
 // Freeing functions
 void			free_map(char **map);

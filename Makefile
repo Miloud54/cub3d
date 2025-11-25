@@ -23,6 +23,7 @@ SRC			= 	main.c \
 				render/raycast_dda.c \
 				render/raycast_draw.c \
 				render/textures.c \
+				render/minimap.c \
 				movement.c \
 				handle_input.c \
 				close.c \
