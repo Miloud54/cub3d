@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:56:02 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/25 16:15:41 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 18:01:23 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,6 @@ int	mouse_hook(int button, int x, int y, t_game *game)
 void	handle_input(t_game *game)
 {
 	process_input(game);
-	mouse_look(game);
+	if (BONUS)
+		mouse_look(game);
 }
