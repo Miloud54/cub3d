@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 12:05:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 16:30:52 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/25 18:39:35 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	render_frame(t_game *game)
 		draw_column(game, x, &draw, &ray);
 		x++;
 	}
+	if (BONUS)
+		render_minimap(game);
 	mlx_clear_window(game->mlx, game->window);
 	mlx_put_image_to_window(game->mlx, game->window, game->img, 0, 0);
 	mlx_do_sync(game->mlx);
