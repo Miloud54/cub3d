@@ -42,9 +42,15 @@ SRC			= 	main.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
-OBJ_PATH	= ./objs/
+OBJ_DIR_BASE	= ./objs
+ifeq ($(BONUS),1)
+OBJ_PATH		= $(OBJ_DIR_BASE)_bonus
+else
+OBJ_PATH		= $(OBJ_DIR_BASE)
+endif
+
 OBJ			= $(SRC:.c=.o)
-OBJS		= $(addprefix $(OBJ_PATH), $(OBJ))
+OBJS		= $(addprefix $(OBJ_PATH)/, $(OBJ))
 
 INC			=	-I ./inc/\
 				-I ./libft/\
@@ -54,14 +60,9 @@ all: $(OBJ_PATH) $(MLX) $(LIBFT) $(NAME)
 
 $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
-	mkdir -p $(OBJ_PATH)/init
-	mkdir -p $(OBJ_PATH)/parsing
-	mkdir -p $(OBJ_PATH)/movement
-	mkdir -p $(OBJ_PATH)/render
-	mkdir -p $(OBJ_PATH)/debug
-	mkdir -p $(OBJ_PATH)/exit
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -DBONUS=$(BONUS) -c $< -o $@ $(INC)
 
 $(NAME): $(OBJS)
@@ -77,7 +78,7 @@ bonus:
 	make all BONUS=1
 
 clean:
-	rm -rf $(OBJ_PATH)
+	rm -rf $(OBJ_DIR_BASE) $(OBJ_DIR_BASE)_bonus
 	make -C $(LIBFT_PATH) clean
 	make -C $(MLX_PATH) clean
 
