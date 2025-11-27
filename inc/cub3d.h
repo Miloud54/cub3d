@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/27 14:09:29 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/27 14:48:53 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,16 @@
 # define KEY_S 115
 # define KEY_A 97
 # define KEY_D 100
-# if BONUS
-#  define KEY_SPACE 32
-#  define DOOR_INTERACT_DIST 1.51
-# endif
+# define KEY_SPACE 32
+# define DOOR_INTERACT_DIST 1.51
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 # define PLAYER_COLLISION_RADIUS 0.2
 # define MINIMAP_SIZE 200
 # define MINIMAP_TILE_SIZE 8
 # define MINIMAP_OFFSET 20
+# define MINIMAP_RADIUS 7
+# define MINIMAP_TILE_SIZE_MINI 8
 
 typedef struct s_ray
 {
@@ -89,16 +89,16 @@ typedef struct s_textures
 	void		*south_img;
 	void		*west_img;
 	void		*east_img;
-	#if BONUS
+# if BONUS
 	void		*door_img;
-	#endif
+# endif
 	char		*north_addr;
 	char		*south_addr;
 	char		*west_addr;
 	char		*east_addr;
-	#if BONUS
+# if BONUS
 	char		*door_addr;
-	#endif
+# endif
 	int			north_w;
 	int			north_h;
 	int			south_w;
@@ -107,17 +107,17 @@ typedef struct s_textures
 	int			west_h;
 	int			east_w;
 	int			east_h;
-	#if BONUS
+# if BONUS
 	int			door_w;
 	int			door_h;
-	#endif
+# endif
 	int			north_line_len;
 	int			south_line_len;
 	int			west_line_len;
 	int			east_line_len;
-	#if BONUS
+# if BONUS
 	int			door_line_len;
-	#endif
+# endif
 	int			bpp;
 	int			endian;
 }				t_textures;
