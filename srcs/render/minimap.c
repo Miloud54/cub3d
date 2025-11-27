@@ -12,7 +12,8 @@
 
 #include "../inc/cub3d.h"
 
-#define MINIMAP_RADIUS 12
+#define MINIMAP_RADIUS 5
+#define MINIMAP_TILE_SIZE_MINI 6
 
 static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 {
@@ -30,10 +31,10 @@ static void	draw_minimap_tile(t_game *game, int screen_x, int screen_y, int colo
 	int	y;
 
 	y = 0;
-	while (y < MINIMAP_TILE_SIZE)
+	while (y < MINIMAP_TILE_SIZE_MINI)
 	{
 		x = 0;
-		while (x < MINIMAP_TILE_SIZE)
+		while (x < MINIMAP_TILE_SIZE_MINI)
 		{
 			put_pixel_to_image(game, screen_x + x, screen_y + y, color);
 			x++;
@@ -74,9 +75,9 @@ static void	draw_player_on_minimap(t_game *game)
 	int		y;
 	int		size;
 
-	size = 4;
-	center_x = MINIMAP_OFFSET + MINIMAP_SIZE / 2;
-	center_y = MINIMAP_OFFSET + MINIMAP_SIZE / 2;
+	size = 3;
+	center_x = MINIMAP_OFFSET + (MINIMAP_RADIUS * MINIMAP_TILE_SIZE_MINI);
+	center_y = MINIMAP_OFFSET + (MINIMAP_RADIUS * MINIMAP_TILE_SIZE_MINI);
 	y = 0;
 	while (y < size)
 	{
@@ -111,12 +112,15 @@ void	render_minimap(t_game *game)
 		map_x = player_map_x - MINIMAP_RADIUS;
 		while (map_x <= player_map_x + MINIMAP_RADIUS)
 		{
-			x_offset = map_x - (player_map_x - MINIMAP_RADIUS);
-			y_offset = map_y - (player_map_y - MINIMAP_RADIUS);
-			screen_x = MINIMAP_OFFSET + (x_offset * MINIMAP_TILE_SIZE);
-			screen_y = MINIMAP_OFFSET + (y_offset * MINIMAP_TILE_SIZE);
 			color = get_minimap_tile_color(game, map_x, map_y);
-			draw_minimap_tile(game, screen_x, screen_y, color);
+			if (color != 0x000000)
+			{
+				x_offset = map_x - (player_map_x - MINIMAP_RADIUS);
+				y_offset = map_y - (player_map_y - MINIMAP_RADIUS);
+				screen_x = MINIMAP_OFFSET + (x_offset * MINIMAP_TILE_SIZE_MINI);
+				screen_y = MINIMAP_OFFSET + (y_offset * MINIMAP_TILE_SIZE_MINI);
+				draw_minimap_tile(game, screen_x, screen_y, color);
+			}
 			map_x++;
 		}
 		map_y++;
