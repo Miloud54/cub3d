@@ -1,9 +1,7 @@
 NAME		= cub3D
-
-BONUS		= 0
-
 CC			= cc
 CFLAGS		= -Werror -Wextra -Wall -g
+BONUS		= 0
 
 MLX_PATH	= minilibx-linux/
 MLX_NAME	= libmlx.a
@@ -17,17 +15,6 @@ SRC_PATH 	= ./srcs/
 SRC			= 	main.c \
 				map_init.c \
 				utils.c \
-				render/render.c \
-				render/raycast.c \
-				render/raycast_utils.c \
-				render/raycast_dda.c \
-				render/raycast_draw.c \
-				render/textures.c \
-				render/minimap.c \
-				movement.c \
-				handle_input.c \
-				close.c \
-				frees.c \
 				parsing/check_extension.c \
 				parsing/check_file_existence.c \
 				parsing/parsing_utils.c \
@@ -39,7 +26,20 @@ SRC			= 	main.c \
 				parsing/parsing_map_utils.c \
 				parsing/parsing_map_validation.c \
 				parsing/parsing_scene_map.c \
-				parsing/parsing_player.c
+				parsing/parsing_player.c \
+				render/render.c \
+				render/raycast.c \
+				render/raycast_utils.c \
+				render/raycast_dda.c \
+				render/raycast_draw.c \
+				render/textures.c \
+				render/minimap.c \
+				door.c \
+				movement.c \
+				handle_input.c \
+				close.c \
+				frees.c
+				
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 

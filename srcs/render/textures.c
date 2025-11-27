@@ -51,6 +51,12 @@ int	load_textures(t_game *game)
 			&game->textures.east_addr, &game->textures.east_w,
 			&game->textures.east_h, &game->textures.east_line_len))
 		return (0);
+#if BONUS
+	if (!load_one_texture(game, "textures/door1.xpm", &game->textures.door_img,
+			&game->textures.door_addr, &game->textures.door_w,
+			&game->textures.door_h, &game->textures.door_line_len))
+		return (0);
+#endif
 	return (1);
 }
 
@@ -64,6 +70,10 @@ void	destroy_texture_images(t_game *game)
 		mlx_destroy_image(game->mlx, game->textures.west_img);
 	if (game->textures.east_img)
 		mlx_destroy_image(game->mlx, game->textures.east_img);
+#if BONUS
+	if (game->textures.door_img)
+		mlx_destroy_image(game->mlx, game->textures.door_img);
+#endif
 	game->textures.north_img = NULL;
 	game->textures.south_img = NULL;
 	game->textures.west_img = NULL;
@@ -72,4 +82,8 @@ void	destroy_texture_images(t_game *game)
 	game->textures.south_addr = NULL;
 	game->textures.west_addr = NULL;
 	game->textures.east_addr = NULL;
+#if BONUS
+	game->textures.door_img = NULL;
+	game->textures.door_addr = NULL;
+#endif
 }
