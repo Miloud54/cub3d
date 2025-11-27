@@ -3,17 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:45:00 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/27 14:28:52 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/27 14:48:37 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
-
-#define MINIMAP_RADIUS 5
-#define MINIMAP_TILE_SIZE_MINI 6
 
 static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 {
