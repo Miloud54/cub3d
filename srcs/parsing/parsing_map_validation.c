@@ -17,6 +17,19 @@ static int	is_player(char c)
 	return (c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
+#if BONUS
+static int	is_door(char c)
+{
+	return (c == 'D' || c == 'd');
+}
+#else
+static int	is_door(char c)
+{
+	(void)c;
+	return (0);
+}
+#endif
+
 static int	can_mark(char **map, char **exterior_map, int height, int row,
 		int col)
 {
@@ -27,12 +40,48 @@ static int	can_mark(char **map, char **exterior_map, int height, int row,
 	len = ft_strlen(map[row]);
 	if (col >= len)
 		return (0);
-	if (map[row][col] == '1')
+	if (map[row][col] == '1' || is_door(map[row][col]))
 		return (0);
 	if (exterior_map[row][col] == 'X')
 		return (0);
 	return (1);
 }
+
+#if BONUS
+static char	get_tile(char **map, int height, int row, int col)
+{
+	int	len;
+
+	if (row < 0 || row >= height)
+		return (' ');
+	len = ft_strlen(map[row]);
+	if (col < 0 || col >= len)
+		return (' ');
+	return (map[row][col]);
+}
+
+static int	is_wall_char(char c)
+{
+	return (c == '1');
+}
+
+static int	validate_door_position(char **map, int height, int row, int col)
+{
+	char	up;
+	char	down;
+	char	left;
+	char	right;
+
+	up = get_tile(map, height, row - 1, col);
+	down = get_tile(map, height, row + 1, col);
+	left = get_tile(map, height, row, col - 1);
+	right = get_tile(map, height, row, col + 1);
+	if ((is_wall_char(left) && is_wall_char(right))
+		|| (is_wall_char(up) && is_wall_char(down)))
+		return (1);
+	return (print_error("Door must be placed between two walls"));
+}
+#endif
 
 static int	flood_fill_exterior(char **map, char **exterior_map, int height,
 		int max_width)
@@ -202,13 +251,23 @@ int	validate_map_structure(t_game *game)
 		{
 			if (is_player(game->map[row][col]))
 				player_count++;
-			if ((game->map[row][col] == '0' || is_player(game->map[row][col]))
+			if ((game->map[row][col] == '0' || is_player(game->map[row][col])
+					|| is_door(game->map[row][col]))
 				&& !validate_cell_with_exterior(game->map, exterior_map,
 					game->map_height, row, col))
 			{
 				free_exterior_map(exterior_map, game->map_height);
 				return (0);
 			}
+#if BONUS
+			if (is_door(game->map[row][col])
+				&& !validate_door_position(game->map, game->map_height, row,
+					col))
+			{
+				free_exterior_map(exterior_map, game->map_height);
+				return (0);
+			}
+#endif
 			col++;
 		}
 		row++;

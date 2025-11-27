@@ -16,6 +16,11 @@ static t_texinfo	select_texture(t_game *game, t_ray *ray)
 {
 	t_texinfo	t;
 
+#if BONUS
+	if (ray->hit_tile == 'D' && game->textures.door_addr)
+		return ((t_texinfo){game->textures.door_addr, game->textures.door_w,
+			game->textures.door_h, game->textures.door_line_len});
+#endif
 	if (ray->side == 0)
 	{
 		if (ray->ray_dir_x > 0)
@@ -66,10 +71,16 @@ void	draw_column(t_game *game, int x, t_draw *d, t_ray *ray)
 	t_texinfo	t;
 	int			tmp;
 	int			fallback_color;
+	int			use_texture;
 
 	y = 0;
 	t = select_texture(game, ray);
 	fallback_color = (ray->side == 0) ? 0x888888 : 0x555555;
+#if BONUS
+	if (ray->hit_tile == 'D')
+		fallback_color = 0x8B5A2B;
+#endif
+	use_texture = (t.addr != NULL);
 	if (ray->side == 0)
 		wall_x = game->player.y + ray->perp_wall_dist * ray->ray_dir_y;
 	else
@@ -95,7 +106,7 @@ void	draw_column(t_game *game, int x, t_draw *d, t_ray *ray)
 				tmp = 0;
 			tex_y = tmp % t.height;
 			tex_pos += step;
-			if (t.addr)
+			if (use_texture)
 				put_pixel(game, x, y, get_texel(&t, tex_x, tex_y,
 						game->textures.bpp));
 			else

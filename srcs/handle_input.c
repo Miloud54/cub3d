@@ -44,6 +44,13 @@ int	key_press(int keycode, t_game *game)
 		game->key_left = 1;
 	else if (keycode == KEY_RIGHT)
 		game->key_right = 1;
+#if BONUS
+	else if (keycode == KEY_SPACE && !game->key_interact)
+	{
+		game->key_interact = 1;
+		toggle_door(game);
+	}
+#endif
 	return (0);
 }
 
@@ -61,6 +68,10 @@ int	key_release(int keycode, t_game *game)
 		game->key_left = 0;
 	else if (keycode == KEY_RIGHT)
 		game->key_right = 0;
+#if BONUS
+	else if (keycode == KEY_SPACE)
+		game->key_interact = 0;
+#endif
 	return (0);
 }
 

@@ -18,7 +18,11 @@ int	is_wall(t_game *game, int x, int y)
 		return (1);
 	if (x >= (int)ft_strlen(game->map[y]))
 		return (1);
+#if BONUS
+	return (game->map[y][x] == '1' || game->map[y][x] == 'D');
+#else
 	return (game->map[y][x] == '1');
+#endif
 }
 
 void	ensure_player_defaults(t_game *game)
@@ -40,6 +44,7 @@ void	ensure_player_defaults(t_game *game)
 void	init_ray(t_game *game, int x, t_ray *ray)
 {
 	ft_bzero(ray, sizeof(*ray));
+	ray->hit_tile = '1';
 	ray->camera_x = 2 * x / (double)game->win_w - 1;
 	ray->ray_dir_x = game->player.dir_x + game->player.plane_x * ray->camera_x;
 	ray->ray_dir_y = game->player.dir_y + game->player.plane_y * ray->camera_x;

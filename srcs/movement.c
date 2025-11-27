@@ -36,7 +36,12 @@ static int	can_stand(t_game *game, double x, double y)
 					return (0);
 				if (map_x >= (int)ft_strlen(game->map[map_y]))
 					return (0);
+#if BONUS
+				if (game->map[map_y][map_x] == '1' || game->map[map_y][map_x]
+					== 'D')
+#else
 				if (game->map[map_y][map_x] == '1')
+#endif
 					return (0);
 				if (game->map[map_y][map_x] == ' ' && is_exterior_space(game,
 						map_y, map_x))

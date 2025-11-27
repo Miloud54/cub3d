@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:45:00 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/25 18:40:00 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/27 11:10:04 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
-
-#define MINIMAP_SIZE 200
-#define MINIMAP_TILE_SIZE 8
-#define MINIMAP_OFFSET 20
 
 static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 {
@@ -57,6 +53,12 @@ static int	get_minimap_tile_color(t_game *game, int x, int y)
 	tile = game->map[y][x];
 	if (tile == '1')
 		return (0xFFFFFF);
+#if BONUS
+	if (tile == 'D')
+		return (0x8B5A2B);
+	if (tile == 'd')
+		return (0xC8A165);
+#endif
 	if (tile == '0')
 		return (0x808080);
 	if (tile == 'N' || tile == 'S' || tile == 'E' || tile == 'W')

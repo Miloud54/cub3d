@@ -33,7 +33,14 @@ void	perform_dda(t_game *game, t_ray *ray)
 			ray->side = 1;
 		}
 		if (is_wall(game, ray->map_x, ray->map_y))
+		{
+			ray->hit_tile = '1';
+			if (ray->map_y >= 0 && ray->map_y < game->map_height
+				&& ray->map_x >= 0
+				&& ray->map_x < (int)ft_strlen(game->map[ray->map_y]))
+				ray->hit_tile = game->map[ray->map_y][ray->map_x];
 			hit = 1;
+		}
 	}
 	if (ray->side == 0)
 		ray->perp_wall_dist = ray->side_dist_x - ray->delta_dist_x;

@@ -16,6 +16,12 @@ static int	get_tile_color(t_game *game, char tile)
 {
 	if (tile == '1')
 		return (0x505050);
+#if BONUS
+	if (tile == 'D')
+		return (0x8B5A2B);
+	if (tile == 'd')
+		return (0xA97A50);
+#endif
 	if (tile == '0' || tile == ' ')
 		return (game->floor_color);
 	if (tile == 'N' || tile == 'S' || tile == 'E' || tile == 'W')
