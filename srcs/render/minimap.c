@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:45:00 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/27 11:10:04 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/27 14:28:52 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
+
+#define MINIMAP_RADIUS 12
 
 static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 {
@@ -22,15 +24,11 @@ static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 	*(unsigned int *)pixel = color;
 }
 
-static void	draw_minimap_tile(t_game *game, int map_x, int map_y, int color)
+static void	draw_minimap_tile(t_game *game, int screen_x, int screen_y, int color)
 {
-	int	screen_x;
-	int	screen_y;
 	int	x;
 	int	y;
 
-	screen_x = MINIMAP_OFFSET + (map_x * MINIMAP_TILE_SIZE);
-	screen_y = MINIMAP_OFFSET + (map_y * MINIMAP_TILE_SIZE);
 	y = 0;
 	while (y < MINIMAP_TILE_SIZE)
 	{
@@ -48,7 +46,9 @@ static int	get_minimap_tile_color(t_game *game, int x, int y)
 {
 	char	tile;
 
-	if (y < 0 || y >= game->map_height || x < 0 || !game->map[y][x])
+	if (y < 0 || y >= game->map_height || x < 0 || x >= game->map_width)
+		return (0x000000);
+	if (!game->map[y] || !game->map[y][x])
 		return (0x000000);
 	tile = game->map[y][x];
 	if (tile == '1')
@@ -68,25 +68,23 @@ static int	get_minimap_tile_color(t_game *game, int x, int y)
 
 static void	draw_player_on_minimap(t_game *game)
 {
-	int		player_screen_x;
-	int		player_screen_y;
+	int		center_x;
+	int		center_y;
 	int		x;
 	int		y;
 	int		size;
 
-	size = 3;
-	player_screen_x = MINIMAP_OFFSET + (int)(game->player.x * MINIMAP_TILE_SIZE)
-		- size / 2;
-	player_screen_y = MINIMAP_OFFSET + (int)(game->player.y * MINIMAP_TILE_SIZE)
-		- size / 2;
+	size = 4;
+	center_x = MINIMAP_OFFSET + MINIMAP_SIZE / 2;
+	center_y = MINIMAP_OFFSET + MINIMAP_SIZE / 2;
 	y = 0;
 	while (y < size)
 	{
 		x = 0;
 		while (x < size)
 		{
-			put_pixel_to_image(game, player_screen_x + x, player_screen_y + y,
-				0xFF0000);
+			put_pixel_to_image(game, center_x - size / 2 + x, 
+				center_y - size / 2 + y, 0xFF0000);
 			x++;
 		}
 		y++;
@@ -95,25 +93,33 @@ static void	draw_player_on_minimap(t_game *game)
 
 void	render_minimap(t_game *game)
 {
-	int	x;
-	int	y;
+	int	map_x;
+	int	map_y;
+	int	screen_x;
+	int	screen_y;
 	int	color;
-	int	max_tiles_x;
-	int	max_tiles_y;
+	int	player_map_x;
+	int	player_map_y;
+	int	x_offset;
+	int	y_offset;
 
-	max_tiles_x = MINIMAP_SIZE / MINIMAP_TILE_SIZE;
-	max_tiles_y = MINIMAP_SIZE / MINIMAP_TILE_SIZE;
-	y = 0;
-	while (y < max_tiles_y && y < game->map_height)
+	player_map_x = (int)game->player.x;
+	player_map_y = (int)game->player.y;
+	map_y = player_map_y - MINIMAP_RADIUS;
+	while (map_y <= player_map_y + MINIMAP_RADIUS)
 	{
-		x = 0;
-		while (x < max_tiles_x && x < game->map_width)
+		map_x = player_map_x - MINIMAP_RADIUS;
+		while (map_x <= player_map_x + MINIMAP_RADIUS)
 		{
-			color = get_minimap_tile_color(game, x, y);
-			draw_minimap_tile(game, x, y, color);
-			x++;
+			x_offset = map_x - (player_map_x - MINIMAP_RADIUS);
+			y_offset = map_y - (player_map_y - MINIMAP_RADIUS);
+			screen_x = MINIMAP_OFFSET + (x_offset * MINIMAP_TILE_SIZE);
+			screen_y = MINIMAP_OFFSET + (y_offset * MINIMAP_TILE_SIZE);
+			color = get_minimap_tile_color(game, map_x, map_y);
+			draw_minimap_tile(game, screen_x, screen_y, color);
+			map_x++;
 		}
-		y++;
+		map_y++;
 	}
 	draw_player_on_minimap(game);
 }
