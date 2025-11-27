@@ -59,6 +59,16 @@ static int	can_stand(t_game *game, double x, double y)
 			return (0);
 		if (x >= game->map_width)
 			return (0);
+		map_y = (int)y;
+		map_x = (int)x;
+		if (map_y >= 0 && map_y < game->map_height)
+		{
+			int	row_len;
+
+			row_len = (int)ft_strlen(game->map[map_y]);
+			if (map_x >= 0 && map_x < row_len && game->map[map_y][map_x] == '1')
+				return (0);
+		}
 	}
 	return (1);
 }
