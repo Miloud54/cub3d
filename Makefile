@@ -38,6 +38,7 @@ SRC			= 	main.c \
 				render/enemies.c \
 				render/enemies_render.c \
 				render/textures.c \
+				render/textures2.c \
 				render/minimap.c \
 				render/door.c \
 				movement.c \
