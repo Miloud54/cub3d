@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 14:53:46 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/28 15:55:24 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,16 @@ typedef struct s_texinfo
 	int				height;
 	int				line_len;
 }					t_texinfo;
+
+typedef struct s_draw_params
+{
+	t_texinfo		t;
+	int				tex_x;
+	int				fallback_color;
+	int				use_texture;
+	double			step;
+	double			tex_pos;
+}					t_draw_params;
 
 typedef struct s_enemy
 {
@@ -285,6 +295,18 @@ void				toggle_door(t_game *game);
 
 // Minimap
 void				render_minimap(t_game *game);
+
+// Drawing functions
+int					is_door_tile(t_ray *ray);
+t_texinfo			get_door_texture(t_game *game);
+t_texinfo			get_wall_texture_x(t_game *game, t_ray *ray);
+t_texinfo			get_wall_texture_y(t_game *game, t_ray *ray);
+t_texinfo			select_texture(t_game *game, t_ray *ray);
+int					get_fallback_color(t_ray *ray);
+double				calculate_wall_x(t_game *game, t_ray *ray);
+int					calculate_tex_x(t_ray *ray, double wall_x, int width);
+unsigned int		get_texel(t_texinfo *t, int tex_x, int tex_y, int bpp);
+void				put_pixel(t_game *game, int x, int y, int color);
 
 // Freeing functions
 void				free_map(char **map);
