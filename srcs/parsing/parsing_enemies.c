@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_enemies.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 16:30:00 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:08 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 16:24:45 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-#if BONUS
+static int	is_bonus_enabled(void)
+{
+	return (1);
+}
 
 static void	init_enemy_direction(t_enemy *enemy, int index)
 {
@@ -90,6 +93,12 @@ int	extract_enemies(t_game *game)
 {
 	int	count;
 
+	if (!is_bonus_enabled())
+	{
+		game->enemy_count = 0;
+		game->enemies = NULL;
+		return (1);
+	}
 	count = count_enemies(game);
 	if (count == 0)
 		return (1);
@@ -100,5 +109,3 @@ int	extract_enemies(t_game *game)
 	fill_enemies(game);
 	return (1);
 }
-
-#endif
