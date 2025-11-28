@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enemies_render.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 14:15:00 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 14:09:54 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 15:24:25 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ static void	draw_sprite_column(t_game *game, t_enemy *enemy, t_sprite *s, int x)
 	if (s->transform_y <= 0 || x <= 0 || x >= game->win_w
 		|| s->transform_y >= game->z_buffer[x])
 		return ;
-	for (y = s->start_y; y < s->end_y; y++)
+	y = s->start_y;
+	while (y < s->end_y)
 	{
 		color = get_enemy_texel(game, enemy->frame, tex_x,
 				((y * 2 - game->win_h + s->height)
@@ -75,6 +76,7 @@ static void	draw_sprite_column(t_game *game, t_enemy *enemy, t_sprite *s, int x)
 					* (game->img_bpp / 8));
 			*(unsigned int *)dst = color;
 		}
+		y++;
 	}
 }
 

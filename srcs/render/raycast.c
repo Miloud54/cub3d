@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   raycast.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 12:05:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:32 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 15:22:32 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
+
+void	ensure_player_defaults(t_game *game)
+{
+	if (game->player.dir_x == 0 && game->player.dir_y == 0)
+	{
+		game->player.dir_x = -1;
+		game->player.dir_y = 0;
+		game->player.plane_x = 0;
+		game->player.plane_y = 0.66;
+	}
+	if (game->player.x == 0 && game->player.y == 0)
+	{
+		game->player.x = 1.5;
+		game->player.y = 1.5;
+	}
+}
 
 int	render_frame(t_game *game)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 12:05:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:30 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 15:22:32 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,34 @@
 
 int	is_wall(t_game *game, int x, int y)
 {
+	char	tile;
+
 	if (x < 0 || y < 0 || y >= game->map_height)
 		return (1);
 	if (x >= (int)ft_strlen(game->map[y]))
 		return (1);
-#if BONUS
-	return (game->map[y][x] == '1' || game->map[y][x] == 'D');
-#else
-	return (game->map[y][x] == '1');
-#endif
+	tile = game->map[y][x];
+	if (tile == '1')
+		return (1);
+	if (BONUS && tile == 'D')
+		return (1);
+	return (0);
 }
 
-void	ensure_player_defaults(t_game *game)
+static void	setup_delta_distances(t_ray *ray)
 {
-	if (game->player.dir_x == 0 && game->player.dir_y == 0)
-	{
-		game->player.dir_x = -1;
-		game->player.dir_y = 0;
-		game->player.plane_x = 0;
-		game->player.plane_y = 0.66;
-	}
-	if (game->player.x == 0 && game->player.y == 0)
-	{
-		game->player.x = 1.5;
-		game->player.y = 1.5;
-	}
+	if (ray->ray_dir_x == 0)
+		ray->delta_dist_x = 1e30;
+	else
+		ray->delta_dist_x = fabs(1 / ray->ray_dir_x);
+	if (ray->ray_dir_y == 0)
+		ray->delta_dist_y = 1e30;
+	else
+		ray->delta_dist_y = fabs(1 / ray->ray_dir_y);
 }
 
-void	init_ray(t_game *game, int x, t_ray *ray)
+static void	setup_step_and_side_dist(t_game *game, t_ray *ray)
 {
-	ft_bzero(ray, sizeof(*ray));
-	ray->hit_tile = '1';
-	ray->camera_x = 2 * x / (double)game->win_w - 1;
-	ray->ray_dir_x = game->player.dir_x + game->player.plane_x * ray->camera_x;
-	ray->ray_dir_y = game->player.dir_y + game->player.plane_y * ray->camera_x;
-	ray->map_x = (int)game->player.x;
-	ray->map_y = (int)game->player.y;
-	ray->delta_dist_x = (ray->ray_dir_x == 0) ? 1e30 : fabs(1 / ray->ray_dir_x);
-	ray->delta_dist_y = (ray->ray_dir_y == 0) ? 1e30 : fabs(1 / ray->ray_dir_y);
 	if (ray->ray_dir_x < 0)
 	{
 		ray->step_x = -1;
@@ -74,4 +64,22 @@ void	init_ray(t_game *game, int x, t_ray *ray)
 		ray->side_dist_y = (ray->map_y + 1.0 - game->player.y)
 			* ray->delta_dist_y;
 	}
+}
+
+static void	setup_ray_distances(t_game *game, t_ray *ray)
+{
+	setup_delta_distances(ray);
+	setup_step_and_side_dist(game, ray);
+}
+
+void	init_ray(t_game *game, int x, t_ray *ray)
+{
+	ft_bzero(ray, sizeof(*ray));
+	ray->hit_tile = '1';
+	ray->camera_x = 2 * x / (double)game->win_w - 1;
+	ray->ray_dir_x = game->player.dir_x + game->player.plane_x * ray->camera_x;
+	ray->ray_dir_y = game->player.dir_y + game->player.plane_y * ray->camera_x;
+	ray->map_x = (int)game->player.x;
+	ray->map_y = (int)game->player.y;
+	setup_ray_distances(game, ray);
 }
