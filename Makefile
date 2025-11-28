@@ -27,14 +27,17 @@ SRC			= 	main.c \
 				parsing/parsing_map_validation.c \
 				parsing/parsing_scene_map.c \
 				parsing/parsing_player.c \
+				parsing/parsing_enemies.c \
 				render/render.c \
 				render/raycast.c \
 				render/raycast_utils.c \
 				render/raycast_dda.c \
 				render/raycast_draw.c \
+				render/enemies.c \
+				render/enemies_render.c \
 				render/textures.c \
 				render/minimap.c \
-				door.c \
+				render/door.c \
 				movement.c \
 				handle_input.c \
 				close.c \

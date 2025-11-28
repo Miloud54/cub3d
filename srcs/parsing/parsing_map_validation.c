@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 15:02:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/25 14:06:35 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:13 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ static int	validate_door_position(char **map, int height, int row, int col)
 	down = get_tile(map, height, row + 1, col);
 	left = get_tile(map, height, row, col - 1);
 	right = get_tile(map, height, row, col + 1);
-	if ((is_wall_char(left) && is_wall_char(right))
-		|| (is_wall_char(up) && is_wall_char(down)))
+	if ((is_wall_char(left) && is_wall_char(right)) || (is_wall_char(up)
+			&& is_wall_char(down)))
 		return (1);
 	return (print_error("Door must be placed between two walls"));
 }
@@ -252,8 +252,12 @@ int	validate_map_structure(t_game *game)
 			if (is_player(game->map[row][col]))
 				player_count++;
 			if ((game->map[row][col] == '0' || is_player(game->map[row][col])
-					|| is_door(game->map[row][col]))
-				&& !validate_cell_with_exterior(game->map, exterior_map,
+					|| is_door(game->map[row][col])
+#if BONUS
+					|| game->map[row][col] == ENEMY_SPAWN_CHAR
+#endif
+					) &&
+				!validate_cell_with_exterior(game->map, exterior_map,
 					game->map_height, row, col))
 			{
 				free_exterior_map(exterior_map, game->map_height);

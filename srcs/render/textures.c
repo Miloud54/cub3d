@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:42:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/24 16:31:19 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:36 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static int	load_one_texture(t_game *game, char *path, void **img, char **addr,
 	image = mlx_xpm_file_to_image(game->mlx, path, w, h);
 	if (!image)
 		return (print_error("Failed to load texture image"));
-	data = mlx_get_data_addr(image, &game->textures.bpp,
-			line_len, &game->textures.endian);
+	data = mlx_get_data_addr(image, &game->textures.bpp, line_len,
+			&game->textures.endian);
 	if (!data)
 	{
 		mlx_destroy_image(game->mlx, image);
@@ -32,6 +32,27 @@ static int	load_one_texture(t_game *game, char *path, void **img, char **addr,
 	*addr = data;
 	return (1);
 }
+
+#if BONUS
+static int	load_enemy_textures(t_game *game)
+{
+	static char	*paths[ENEMY_FRAME_COUNT] = {"textures/enemy1.xpm",
+			"textures/enemy2.xpm", "textures/enemy3.xpm",
+			"textures/enemy4.xpm"};
+	int			i;
+
+	i = 0;
+	while (i < ENEMY_FRAME_COUNT)
+	{
+		if (!load_one_texture(game, paths[i], &game->textures.enemy_img[i],
+				&game->textures.enemy_addr[i], &game->textures.enemy_w,
+				&game->textures.enemy_h, &game->textures.enemy_line_len[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+#endif
 
 int	load_textures(t_game *game)
 {
@@ -56,6 +77,8 @@ int	load_textures(t_game *game)
 			&game->textures.door_addr, &game->textures.door_w,
 			&game->textures.door_h, &game->textures.door_line_len))
 		return (0);
+	if (!load_enemy_textures(game))
+		return (0);
 #endif
 	return (1);
 }
@@ -73,6 +96,14 @@ void	destroy_texture_images(t_game *game)
 #if BONUS
 	if (game->textures.door_img)
 		mlx_destroy_image(game->mlx, game->textures.door_img);
+	if (game->textures.enemy_img[0])
+		mlx_destroy_image(game->mlx, game->textures.enemy_img[0]);
+	if (game->textures.enemy_img[1])
+		mlx_destroy_image(game->mlx, game->textures.enemy_img[1]);
+	if (game->textures.enemy_img[2])
+		mlx_destroy_image(game->mlx, game->textures.enemy_img[2]);
+	if (game->textures.enemy_img[3])
+		mlx_destroy_image(game->mlx, game->textures.enemy_img[3]);
 #endif
 	game->textures.north_img = NULL;
 	game->textures.south_img = NULL;
@@ -85,5 +116,9 @@ void	destroy_texture_images(t_game *game)
 #if BONUS
 	game->textures.door_img = NULL;
 	game->textures.door_addr = NULL;
+	ft_bzero(game->textures.enemy_img, sizeof(game->textures.enemy_img));
+	ft_bzero(game->textures.enemy_addr, sizeof(game->textures.enemy_addr));
+	ft_bzero(game->textures.enemy_line_len,
+		sizeof(game->textures.enemy_line_len));
 #endif
 }

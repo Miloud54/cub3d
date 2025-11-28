@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:12:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/21 12:17:51 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:09 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	validate_map_line(char *line)
 		if (line[i] != '0' && line[i] != '1' && line[i] != ' ' && line[i] != 'N'
 			&& line[i] != 'S' && line[i] != 'E' && line[i] != 'W'
 #if BONUS
-			&& line[i] != 'D' && line[i] != 'd'
+			&& line[i] != 'D' && line[i] != 'd' && line[i] != ENEMY_SPAWN_CHAR
 #endif
-			)
+		)
 			return (0);
 		i++;
 	}

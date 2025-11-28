@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:08:28 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/25 15:28:56 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:48 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,11 @@ int	main(int ac, char **av)
 	if (!validate_args(ac, av))
 		return (1);
 	if (!parse_scene(av[1], &game) || !validate_map_structure(&game)
-		|| !validate_textures(&game.textures)
-		|| !extract_player_position(&game))
+		|| !validate_textures(&game.textures) || !extract_player_position(&game)
+#if BONUS
+		|| !extract_enemies(&game)
+#endif
+	)
 	{
 		cleanup_game(&game);
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 11:10:09 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/21 16:24:47 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:17 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	looks_like_map_line(char *line)
 #if BONUS
 			&& line[i] != 'D' && line[i] != 'd'
 #endif
-			)
+		)
 			return (0);
 		i++;
 	}
