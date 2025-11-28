@@ -33,6 +33,8 @@ SRC			= 	main.c \
 				render/raycast_utils.c \
 				render/raycast_dda.c \
 				render/raycast_draw.c \
+				render/raycast_draw1.c \
+				render/raycast_draw2.c \
 				render/enemies.c \
 				render/enemies_render.c \
 				render/textures.c \
