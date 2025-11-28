@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_scene.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 10:12:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 18:27:22 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:18 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,9 @@ static int	process_file_lines(int fd, t_scene *scene, char **tmp)
 
 int	parse_scene(const char *filename, t_game *game)
 {
-	int			fd;
-	char		*tmp;
-	t_scene		scene;
+	int		fd;
+	char	*tmp;
+	t_scene	scene;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)

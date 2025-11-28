@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:24:58 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/25 18:16:50 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:50 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,11 @@ static int	init_window(t_game *game)
 			&game->img_line_len, &game->img_endian);
 	if (!game->img_addr)
 		return (print_error("Failed to access render buffer"));
+#if BONUS
+	game->z_buffer = malloc(sizeof(double) * width);
+	if (!game->z_buffer)
+		return (print_error("Failed to allocate z-buffer"));
+#endif
 	return (1);
 }
 

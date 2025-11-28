@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:04:16 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/24 16:31:47 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:41 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ void	cleanup_game(t_game *game)
 		free_map(game->map);
 	if (game->exterior_map)
 		free_exterior_map(game->exterior_map, game->map_height);
+#if BONUS
+	if (game->enemies)
+		free(game->enemies);
+	if (game->z_buffer)
+		free(game->z_buffer);
+#endif
 	if (game->mlx)
 	{
 		mlx_destroy_display(game->mlx);

@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:40:00 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/25 17:42:29 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 13:56:56 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static int	can_stand(t_game *game, double x, double y)
 	int		j;
 	int		map_x;
 	int		map_y;
+	int		row_len;
 
 	offsets[0] = -PLAYER_COLLISION_RADIUS;
 	offsets[1] = PLAYER_COLLISION_RADIUS;
@@ -37,8 +38,8 @@ static int	can_stand(t_game *game, double x, double y)
 				if (map_x >= (int)ft_strlen(game->map[map_y]))
 					return (0);
 #if BONUS
-				if (game->map[map_y][map_x] == '1' || game->map[map_y][map_x]
-					== 'D')
+				if (game->map[map_y][map_x] == '1'
+					|| game->map[map_y][map_x] == 'D')
 #else
 				if (game->map[map_y][map_x] == '1')
 #endif
@@ -63,8 +64,6 @@ static int	can_stand(t_game *game, double x, double y)
 		map_x = (int)x;
 		if (map_y >= 0 && map_y < game->map_height)
 		{
-			int	row_len;
-
 			row_len = (int)ft_strlen(game->map[map_y]);
 			if (map_x >= 0 && map_x < row_len && game->map[map_y][map_x] == '1')
 				return (0);
