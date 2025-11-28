@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_map_storage.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 14:12:12 by emiliedidie       #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:09 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 15:03:38 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
+
+static int	is_valid_char(char c)
+{
+	if (c == '0' || c == '1' || c == ' ' || c == 'N'
+		|| c == 'S' || c == 'E' || c == 'W')
+		return (1);
+	if (BONUS && (c == 'D' || c == 'd' || c == 'M'))
+		return (1);
+	return (0);
+}
 
 int	validate_map_line(char *line)
 {
@@ -19,12 +29,7 @@ int	validate_map_line(char *line)
 	i = 0;
 	while (line[i] && line[i] != '\n' && line[i] != '\r')
 	{
-		if (line[i] != '0' && line[i] != '1' && line[i] != ' ' && line[i] != 'N'
-			&& line[i] != 'S' && line[i] != 'E' && line[i] != 'W'
-#if BONUS
-			&& line[i] != 'D' && line[i] != 'd' && line[i] != ENEMY_SPAWN_CHAR
-#endif
-		)
+		if (!is_valid_char(line[i]))
 			return (0);
 		i++;
 	}

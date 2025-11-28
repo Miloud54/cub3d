@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:45:00 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:25 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 14:53:44 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 	*(unsigned int *)pixel = color;
 }
 
-static void	draw_minimap_tile(t_game *game, int screen_x, int screen_y,
-		int color)
+static void	draw_minimap_tile(t_game *game, int screen_x, int screen_y, int color)
 {
 	int	x;
 	int	y;
@@ -40,55 +39,6 @@ static void	draw_minimap_tile(t_game *game, int screen_x, int screen_y,
 		y++;
 	}
 }
-
-#if BONUS
-static void	draw_enemy_marker(t_game *game, int screen_x, int screen_y)
-{
-	int	x;
-	int	y;
-	int	size;
-
-	size = 2;
-	y = 0;
-	while (y < size)
-	{
-		x = 0;
-		while (x < size)
-		{
-			put_pixel_to_image(game, screen_x + x, screen_y + y, 0x00FF00);
-			x++;
-		}
-		y++;
-	}
-}
-
-static void	draw_enemies_on_minimap(t_game *game, int player_map_x,
-		int player_map_y)
-{
-	int	i;
-	int	rel_x;
-	int	rel_y;
-	int	screen_x;
-	int	screen_y;
-
-	if (!game->enemies || game->enemy_count == 0)
-		return ;
-	i = 0;
-	while (i < game->enemy_count)
-	{
-		rel_x = (int)game->enemies[i].x - (player_map_x - MINIMAP_RADIUS);
-		rel_y = (int)game->enemies[i].y - (player_map_y - MINIMAP_RADIUS);
-		if (rel_x >= 0 && rel_x <= MINIMAP_RADIUS * 2 && rel_y >= 0
-			&& rel_y <= MINIMAP_RADIUS * 2)
-		{
-			screen_x = MINIMAP_OFFSET + rel_x * MINIMAP_TILE_SIZE_MINI;
-			screen_y = MINIMAP_OFFSET + rel_y * MINIMAP_TILE_SIZE_MINI;
-			draw_enemy_marker(game, screen_x, screen_y);
-		}
-		i++;
-	}
-}
-#endif
 
 static int	get_minimap_tile_color(t_game *game, int x, int y)
 {
@@ -116,11 +66,11 @@ static int	get_minimap_tile_color(t_game *game, int x, int y)
 
 static void	draw_player_on_minimap(t_game *game)
 {
-	int	center_x;
-	int	center_y;
-	int	x;
-	int	y;
-	int	size;
+	int		center_x;
+	int		center_y;
+	int		x;
+	int		y;
+	int		size;
 
 	size = 3;
 	center_x = MINIMAP_OFFSET + (MINIMAP_RADIUS * MINIMAP_TILE_SIZE_MINI);
@@ -131,8 +81,8 @@ static void	draw_player_on_minimap(t_game *game)
 		x = 0;
 		while (x < size)
 		{
-			put_pixel_to_image(game, center_x - size / 2 + x, center_y - size
-				/ 2 + y, 0xFF0000);
+			put_pixel_to_image(game, center_x - size / 2 + x, 
+				center_y - size / 2 + y, 0xFF0000);
 			x++;
 		}
 		y++;
@@ -172,8 +122,5 @@ void	render_minimap(t_game *game)
 		}
 		map_y++;
 	}
-#if BONUS
-	draw_enemies_on_minimap(game, player_map_x, player_map_y);
-#endif
 	draw_player_on_minimap(game);
 }
