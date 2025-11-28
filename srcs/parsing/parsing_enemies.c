@@ -6,7 +6,7 @@
 /*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 16:30:00 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 16:24:45 by bde-la-p         ###   ########.fr       */
+/*   Updated: 2025/11/28 16:41:01 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,10 @@ static int	count_enemies(t_game *game)
 
 static void	fill_enemies(t_game *game)
 {
-	int	row;
 	int	col;
 	int	idx;
 
-	row = 0;
+	int (row) = 0;
 	idx = 0;
 	while (row < game->map_height)
 	{
