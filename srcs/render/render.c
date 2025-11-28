@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 13:05:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:34 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 14:59:06 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,20 @@ static int	get_tile_color(t_game *game, char tile)
 {
 	if (tile == '1')
 		return (0x505050);
-#if BONUS
-	if (tile == 'D')
-		return (0x8B5A2B);
-	if (tile == 'd')
-		return (0xA97A50);
-#endif
 	if (tile == '0' || tile == ' ')
 		return (game->floor_color);
 	if (tile == 'N' || tile == 'S' || tile == 'E' || tile == 'W')
 		return (0xFF0000);
 	return (game->ceiling_color);
+}
+
+static int	get_bonus_tile_color(t_game *game, char tile)
+{
+	if (tile == 'D')
+		return (0x8B5A2B);
+	if (tile == 'd')
+		return (0xA97A50);
+	return (get_tile_color(game, tile));
 }
 
 static void	draw_tile(t_game *game, int row, int col, int color)
@@ -66,7 +69,10 @@ int	render_map(t_game *game)
 		col = 0;
 		while (game->map[row][col])
 		{
-			color = get_tile_color(game, game->map[row][col]);
+			if (BONUS)
+				color = get_bonus_tile_color(game, game->map[row][col]);
+			else
+				color = get_tile_color(game, game->map[row][col]);
 			draw_tile(game, row, col, color);
 			col++;
 		}

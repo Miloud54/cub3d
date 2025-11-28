@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycast_dda.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 12:05:12 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:26 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 15:10:00 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,40 @@
 /*DDA = Digital Differential Analyzer,
 	l’algorithme de raycasting qui avance case par case dans la grille*/
 
+static void	perform_ray_step(t_ray *ray)
+{
+	if (ray->side_dist_x < ray->side_dist_y)
+	{
+		ray->side_dist_x += ray->delta_dist_x;
+		ray->map_x += ray->step_x;
+		ray->side = 0;
+	}
+	else
+	{
+		ray->side_dist_y += ray->delta_dist_y;
+		ray->map_y += ray->step_y;
+		ray->side = 1;
+	}
+}
+
+static void	calculate_wall_distance(t_ray *ray)
+{
+	if (ray->side == 0)
+		ray->perp_wall_dist = ray->side_dist_x - ray->delta_dist_x;
+	else
+		ray->perp_wall_dist = ray->side_dist_y - ray->delta_dist_y;
+	if (ray->perp_wall_dist <= 0.0001)
+		ray->perp_wall_dist = 0.0001;
+}
+
 void	perform_dda(t_game *game, t_ray *ray)
 {
-	int(hit) = 0;
+	int	hit;
+
+	hit = 0;
 	while (!hit)
 	{
-		if (ray->side_dist_x < ray->side_dist_y)
-		{
-			ray->side_dist_x += ray->delta_dist_x;
-			ray->map_x += ray->step_x;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->side_dist_y += ray->delta_dist_y;
-			ray->map_y += ray->step_y;
-			ray->side = 1;
-		}
+		perform_ray_step(ray);
 		if (is_wall(game, ray->map_x, ray->map_y))
 		{
 			ray->hit_tile = '1';
@@ -42,12 +59,7 @@ void	perform_dda(t_game *game, t_ray *ray)
 			hit = 1;
 		}
 	}
-	if (ray->side == 0)
-		ray->perp_wall_dist = ray->side_dist_x - ray->delta_dist_x;
-	else
-		ray->perp_wall_dist = ray->side_dist_y - ray->delta_dist_y;
-	if (ray->perp_wall_dist <= 0.0001)
-		ray->perp_wall_dist = 0.0001;
+	calculate_wall_distance(ray);
 }
 
 void	compute_draw_limits(t_game *game, t_ray *ray, t_draw *draw)

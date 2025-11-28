@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
+/*   By: bde-la-p <bde-la-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/11/28 14:04:57 by edidier          ###   ########.fr       */
+/*   Updated: 2025/11/28 14:53:46 by bde-la-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@
 # define MINIMAP_SIZE 200
 # define MINIMAP_TILE_SIZE 8
 # define MINIMAP_OFFSET 20
-# define MINIMAP_RADIUS 7
-# define MINIMAP_TILE_SIZE_MINI 8
+# define MINIMAP_RADIUS 5
+# define MINIMAP_TILE_SIZE_MINI 6
 # define ENEMY_FRAME_COUNT 4
 # define ENEMY_SPAWN_CHAR 'M'
 # define ENEMY_ANIM_SPEED 0.12
