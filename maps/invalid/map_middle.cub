@@ -1,0 +1,22 @@
+
+NO ./textures/wall11.xpm
+SO ./textures/wall17.xpm
+WE ./textures/wall8.xpm
+EA ./textures/wall9.xpm
+
+11111
+10001
+10S01
+10001
+10001
+10001
+11001
+10001
+10001
+10001
+10001
+10001
+11111
+
+C 204, 233, 255
+F 255, 212, 250

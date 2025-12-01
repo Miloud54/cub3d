@@ -74,6 +74,8 @@ static int	process_cell(t_game *game, t_map *ctx, t_point pos,
 	tile = game->map[pos.row][pos.col];
 	if (is_player(tile))
 		(*player_count)++;
+	if (tile == ' ' && ctx->exterior_map[pos.row][pos.col] != 'X')
+		return (print_error("Invalid void space inside map"));
 	if ((tile == '0' || is_player(tile) || is_door(tile) || (BONUS_ENABLED
 				&& tile == ENEMY_SPAWN_CHAR))
 		&& !validate_cell_with_exterior(ctx, pos.row, pos.col))
