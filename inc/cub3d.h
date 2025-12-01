@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 14:21:24 by edidier           #+#    #+#             */
-/*   Updated: 2025/12/01 15:26:46 by edidier          ###   ########.fr       */
+/*   Updated: 2025/12/03 18:05:00 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@
 # include <limits.h>
 # include <math.h>
 # include <stdbool.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
 
@@ -30,35 +28,47 @@
 #  define BONUS 1
 # endif
 
-# define TILE_SIZE 64
-# define MAX_MAP_WIDTH 640
-# define MAX_MAP_HEIGHT 480
-# define COLOR_WHITESPACES " \t\n\r\v\f"
+/* Window / controls */
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 720
-# define MOVE_SPEED 0.06
-# define ROT_SPEED 0.05
-# define MOUSE_SENSITIVITY 0.003
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
 # define KEY_A 97
 # define KEY_D 100
 # define KEY_SPACE 32
-# define DOOR_INTERACT_DIST 1.51
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
+
+/* Player / movement */
+# define MOVE_SPEED 0.06
+# define ROT_SPEED 0.05
+# define MOUSE_SENSITIVITY 0.003
 # define PLAYER_COLLISION_RADIUS 0.2
+# define DOOR_INTERACT_DIST 1.51
+
+/* Minimap */
 # define MINIMAP_SIZE 220
 # define MINIMAP_TILE_SIZE 8
 # define MINIMAP_OFFSET 24
 # define MINIMAP_RADIUS 7
 # define MINIMAP_TILE_SIZE_MINI 8
+
+/* Enemy */
 # define ENEMY_FRAME_COUNT 4
 # define ENEMY_SPAWN_CHAR 'M'
 # define ENEMY_ANIM_SPEED 0.12
 # define ENEMY_MOVE_SPEED 0.75
 # define ENEMY_COLLISION_RADIUS 0.2
+
+/* Parsing */
+# define COLOR_WHITESPACES " \t\n\r\v\f"
+
+typedef struct s_point
+{
+	int				row;
+	int				col;
+}					t_point;
 
 typedef struct s_ray
 {
@@ -125,18 +135,22 @@ typedef struct s_textures
 	int				endian;
 }					t_textures;
 
-typedef struct s_point
+typedef struct s_texinfo
 {
-	int				row;
-	int				col;
-}					t_point;
+	char			*addr;
+	int				width;
+	int				height;
+	int				line_len;
+}					t_texinfo;
 
-typedef struct s_fill_state
+typedef struct s_tex_load
 {
-	t_point			*queue;
-	int				head;
-	int				tail;
-}					t_fill_state;
+	void			**img;
+	char			**addr;
+	int				*w;
+	int				*h;
+	int				*line_len;
+}					t_tex_load;
 
 typedef struct s_player
 {
@@ -148,40 +162,6 @@ typedef struct s_player
 	double			plane_y;
 	char			start_dir;
 }					t_player;
-
-typedef struct s_texinfo
-{
-	char			*addr;
-	int				width;
-	int				height;
-	int				line_len;
-}					t_texinfo;
-
-typedef struct s_draw_params
-{
-	t_texinfo		t;
-	int				tex_x;
-	int				fallback_color;
-	int				use_texture;
-	double			step;
-	double			tex_pos;
-}					t_draw_params;
-
-typedef struct s_door_search
-{
-	double			best2;
-	int				x;
-	int				y;
-}					t_door_search;
-
-typedef struct s_tex_load
-{
-	void			**img;
-	char			**addr;
-	int				*w;
-	int				*h;
-	int				*line_len;
-}					t_tex_load;
 
 typedef struct s_enemy
 {
@@ -207,6 +187,41 @@ typedef struct s_sprite
 	int				end_y;
 	unsigned int	transparent;
 }					t_sprite;
+
+typedef struct s_draw_params
+{
+	t_texinfo		t;
+	int				tex_x;
+	int				fallback_color;
+	int				use_texture;
+	double			step;
+	double			tex_pos;
+}					t_draw_params;
+
+typedef struct s_fill_state
+{
+	t_point			*queue;
+	int				head;
+	int				tail;
+}					t_fill_state;
+
+typedef struct s_map
+{
+	char			**map;
+	char			**exterior_map;
+	int				height;
+}					t_map;
+
+typedef struct s_scene
+{
+	t_game			*game;
+	t_list			*map_lines;
+	int				map_started;
+	int				map_height;
+	int				map_width;
+	int				floor_found;
+	int				ceiling_found;
+}					t_scene;
 
 typedef struct s_game
 {
@@ -245,83 +260,90 @@ typedef struct s_game
 	double			last_frame_time;
 }					t_game;
 
-typedef struct s_map
+typedef struct s_door_search
 {
-	char			**map;
-	char			**exterior_map;
-	int				height;
-}					t_map;
+	double			best2;
+	int				x;
+	int				y;
+}					t_door_search;
 
-typedef struct s_scene
-{
-	t_game			*game;
-	t_list			*map_lines;
-	int				map_started;
-	int				map_height;
-	int				map_width;
-	int				floor_found;
-	int				ceiling_found;
-}					t_scene;
-
+/* Core / init */
 int					init_game(t_game *game);
-int					print_error(char *msg);
+int					close_game(t_game *game);
+void				cleanup_game(t_game *game);
+
+/* Input */
 int					key_press(int keycode, t_game *game);
 int					key_release(int keycode, t_game *game);
 int					mouse_hook(int button, int x, int y, t_game *game);
 void				mouse_look(t_game *game);
 void				handle_input(t_game *game);
-int					close_game(t_game *game);
-int					render_map(t_game *game);
+
+/* Rendering */
 int					render_frame(t_game *game);
 int					render_loop(void *param);
-int					is_wall(t_game *game, int x, int y);
-void				ensure_player_defaults(t_game *game);
+int					render_map(t_game *game);
+void				render_minimap(t_game *game);
+void				draw_enemies(t_game *game);
+
+/* Raycasting */
 void				init_ray(t_game *game, int x, t_ray *ray);
 void				perform_dda(t_game *game, t_ray *ray);
 void				compute_draw_limits(t_game *game, t_ray *ray, t_draw *draw);
 void				draw_column(t_game *game, int x, t_draw *d, t_ray *ray);
+int					is_wall(t_game *game, int x, int y);
+void				ensure_player_defaults(t_game *game);
+
+/* Textures */
 int					load_textures(t_game *game);
+int					load_one_texture(t_game *game, char *path, t_tex_load *tex);
+int					load_door_texture(t_game *game);
+int					has_bonus_features(void);
 void				destroy_texture_images(t_game *game);
+void				destroy_wall_textures(t_game *game);
+void				destroy_bonus_textures(t_game *game);
+
+/* Doors / interaction */
+void				toggle_door(t_game *game);
+
+/* Movement */
+void				move_forward_backward(t_game *game, int forward);
+void				move_left_right(t_game *game, int right);
+void				rotate_camera_angle(t_game *game, double angle);
+
+/* Enemies */
 int					extract_enemies(t_game *game);
 void				update_enemies(t_game *game, double dt);
-void				draw_enemies(t_game *game);
 
-// Parsing
-int					is_numeric_string(char *str);
-char				*skip_spaces(char *str);
-int					parse_color_line(char *line, char identifier,
-						int *target_color);
-int					parse_rgb_triplet(char *value_str, int *out_color);
+/* Parsing */
+int					parse_scene(const char *filename, t_game *game);
+int					validate_map_structure(t_game *game);
+int					validate_textures(t_textures *textures);
+int					extract_player_position(t_game *game);
+int					handle_texture_line(char *trimmed, t_game *game);
+int					handle_color_line(char *trimmed, t_scene *state);
+int					process_map_line(char *line, t_scene *state);
+int					looks_like_map_line(char *line);
 int					is_map_identifier(char *line);
 int					validate_map_line(char *line);
 char				*dup_map_line(char *line);
 int					append_map_line(t_list **lines, char *line, int *max_width);
 char				**list_to_array(t_list **lines, int height);
-int					validate_map_structure(t_game *game);
-int					validate_textures(t_textures *textures);
-int					handle_texture_line(char *trimmed, t_game *game);
-int					handle_color_line(char *trimmed, t_scene *state);
-int					looks_like_map_line(char *line);
-int					process_map_line(char *line, t_scene *state);
+int					parse_color_line(char *line, char identifier,
+						int *target_color);
+int					parse_rgb_triplet(char *value_str, int *out_color);
+char				*skip_spaces(char *str);
+int					is_numeric_string(char *str);
 int					file_exists(const char *path);
 int					is_valid_extension(char *filename);
 int					is_valid_extension_xpm(char *filename);
-int					parse_scene(const char *filename, t_game *game);
-int					extract_player_position(t_game *game);
 int					is_exterior_space(t_game *game, int row, int col);
 void				free_exterior_map(char **exterior_map, int height);
 char				**create_exterior_map(t_game *game);
 int					validate_door_position(char **map, int height, int row,
 						int col);
-void				move_forward_backward(t_game *game, int forward);
-void				move_left_right(t_game *game, int right);
-void				rotate_camera_angle(t_game *game, double angle);
-void				toggle_door(t_game *game);
 
-// Minimap
-void				render_minimap(t_game *game);
-
-// Drawing functions
+/* Drawing helpers */
 int					is_door_tile(t_ray *ray);
 t_texinfo			get_door_texture(t_game *game);
 t_texinfo			get_wall_texture_x(t_game *game, t_ray *ray);
@@ -333,16 +355,10 @@ int					calculate_tex_x(t_ray *ray, double wall_x, int width);
 unsigned int		get_texel(t_texinfo *t, int tex_x, int tex_y, int bpp);
 void				put_pixel(t_game *game, int x, int y, int color);
 
-// Texture functions
-int					load_one_texture(t_game *game, char *path, t_tex_load *tex);
-int					load_door_texture(t_game *game);
-int					has_bonus_features(void);
-void				destroy_wall_textures(t_game *game);
-void				destroy_bonus_textures(t_game *game);
-
-// Freeing functions
+/* Freeing helpers */
 void				free_map(char **map);
 void				free_textures(t_textures *textures);
-void				cleanup_game(t_game *game);
+
+int					print_error(char *msg);
 
 #endif
