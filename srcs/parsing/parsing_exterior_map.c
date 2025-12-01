@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 10:32:35 by edidier           #+#    #+#             */
-/*   Updated: 2025/12/01 14:11:38 by edidier          ###   ########.fr       */
+/*   Updated: 2025/12/01 15:24:11 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,6 @@
 # define BONUS_ENABLED 0
 
 #endif
-
-typedef struct s_fill_state
-{
-	t_point	*queue;
-	int		head;
-	int		tail;
-}			t_fill_state;
 
 static void	push_mark(t_map *ctx, t_point *queue, int *tail, t_point pos)
 {
