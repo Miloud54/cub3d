@@ -17,7 +17,19 @@ static unsigned int	get_enemy_texel(t_game *game, int frame, int tex_x,
 {
 	char	*addr;
 	int		line_len;
+	int		w;
+	int		h;
 
+	w = game->textures.enemy_w;
+	h = game->textures.enemy_h;
+	if (tex_x < 0)
+		tex_x = 0;
+	else if (tex_x >= w)
+		tex_x = w - 1;
+	if (tex_y < 0)
+		tex_y = 0;
+	else if (tex_y >= h)
+		tex_y = h - 1;
 	addr = game->textures.enemy_addr[frame];
 	line_len = game->textures.enemy_line_len[frame];
 	return (*(unsigned int *)(addr + tex_y * line_len + tex_x
@@ -56,27 +68,25 @@ static void	draw_sprite_column(t_game *game, t_enemy *enemy, t_sprite *s, int x)
 {
 	int				y;
 	int				tex_x;
+	int				tex_y;
 	unsigned int	color;
-	char			*dst;
+	int				step;
 
 	tex_x = (int)((x - (-s->width / 2 + s->screen_x))
 			* game->textures.enemy_w / s->width);
 	if (s->transform_y <= 0 || x <= 0 || x >= game->win_w
 		|| s->transform_y >= game->z_buffer[x])
 		return ;
-	y = s->start_y;
-	while (y < s->end_y)
+	step = game->img_bpp / 8;
+	y = s->start_y - 1;
+	while (++y < s->end_y)
 	{
-		color = get_enemy_texel(game, enemy->frame, tex_x,
-				((y * 2 - game->win_h + s->height)
-					* game->textures.enemy_h) / (2 * s->height));
+		tex_y = ((y * 2 - game->win_h + s->height) * game->textures.enemy_h)
+			/ (2 * s->height);
+		color = get_enemy_texel(game, enemy->frame, tex_x, tex_y);
 		if (color != s->transparent)
-		{
-			dst = game->img_addr + (y * game->img_line_len + x
-					* (game->img_bpp / 8));
-			*(unsigned int *)dst = color;
-		}
-		y++;
+			*(unsigned int *)(game->img_addr + (y * game->img_line_len
+						+ x * step)) = color;
 	}
 }
 

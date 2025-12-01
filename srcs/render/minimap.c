@@ -23,43 +23,21 @@ static void	put_pixel_to_image(t_game *game, int x, int y, int color)
 	*(unsigned int *)pixel = color;
 }
 
-static void	draw_minimap_tile(t_game *game, int screen_x, int screen_y,
-	int color)
+static int	minimap_tile_color(t_game *game, int x, int y)
 {
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < MINIMAP_TILE_SIZE_MINI)
-	{
-		x = 0;
-		while (x < MINIMAP_TILE_SIZE_MINI)
-		{
-			put_pixel_to_image(game, screen_x + x, screen_y + y, color);
-			x++;
-		}
-		y++;
-	}
-}
-
-static int	get_minimap_tile_color(t_game *game, int x, int y)
-{
-	char	tile;
-
 	if (y < 0 || y >= game->map_height || x < 0 || x >= game->map_width)
 		return (0x000000);
 	if (!game->map[y] || !game->map[y][x])
 		return (0x000000);
-	tile = game->map[y][x];
-	if (tile == '1')
+	if (game->map[y][x] == '1')
 		return (0xFFFFFF);
-	if (BONUS && tile == 'D')
+	if (BONUS && game->map[y][x] == 'D')
 		return (0x8B5A2B);
-	if (BONUS && tile == 'd')
+	if (BONUS && game->map[y][x] == 'd')
 		return (0xC8A165);
-	if (tile == '0')
-		return (0x808080);
-	if (tile == 'N' || tile == 'S' || tile == 'E' || tile == 'W')
+	if (game->map[y][x] == '0' || game->map[y][x] == 'N'
+		|| game->map[y][x] == 'S' || game->map[y][x] == 'E'
+		|| game->map[y][x] == 'W')
 		return (0x808080);
 	return (0x000000);
 }
@@ -69,27 +47,55 @@ static void	render_minimap_tiles(t_game *game, int player_x, int player_y)
 	int	map_x;
 	int	map_y;
 	int	color;
-	int	screen_coords[2];
+	int	idx;
 
-	map_y = player_y - MINIMAP_RADIUS;
-	while (map_y <= player_y + MINIMAP_RADIUS)
+	map_y = player_y - MINIMAP_RADIUS - 1;
+	while (++map_y <= player_y + MINIMAP_RADIUS)
 	{
-		map_x = player_x - MINIMAP_RADIUS;
-		while (map_x <= player_x + MINIMAP_RADIUS)
+		map_x = player_x - MINIMAP_RADIUS - 1;
+		while (++map_x <= player_x + MINIMAP_RADIUS)
 		{
-			color = get_minimap_tile_color(game, map_x, map_y);
+			color = minimap_tile_color(game, map_x, map_y);
 			if (color != 0x000000)
 			{
-				screen_coords[0] = MINIMAP_OFFSET + (map_x - player_x
-						+ MINIMAP_RADIUS) * MINIMAP_TILE_SIZE_MINI;
-				screen_coords[1] = MINIMAP_OFFSET + (map_y - player_y
-						+ MINIMAP_RADIUS) * MINIMAP_TILE_SIZE_MINI;
-				draw_minimap_tile(game, screen_coords[0], screen_coords[1],
-					color);
+				idx = -1;
+				while (++idx < MINIMAP_TILE_SIZE_MINI * MINIMAP_TILE_SIZE_MINI)
+					put_pixel_to_image(game, MINIMAP_OFFSET + (map_x - player_x
+							+ MINIMAP_RADIUS) * MINIMAP_TILE_SIZE_MINI
+						+ (idx % MINIMAP_TILE_SIZE_MINI), MINIMAP_OFFSET
+						+ (map_y - player_y + MINIMAP_RADIUS)
+						* MINIMAP_TILE_SIZE_MINI
+						+ (idx / MINIMAP_TILE_SIZE_MINI), color);
 			}
-			map_x++;
 		}
-		map_y++;
+	}
+}
+
+static void	render_minimap_enemies(t_game *game, int player_x, int player_y)
+{
+	int		i;
+	int		screen_x;
+	int		screen_y;
+	int		mark;
+
+	if (!BONUS || game->enemy_count <= 0)
+		return ;
+	i = 0;
+	while (i < game->enemy_count)
+	{
+		if (fabs(game->enemies[i].x - player_x) <= MINIMAP_RADIUS
+			&& fabs(game->enemies[i].y - player_y) <= MINIMAP_RADIUS)
+		{
+			screen_x = MINIMAP_OFFSET + (int)((game->enemies[i].x - player_x
+						+ MINIMAP_RADIUS) * MINIMAP_TILE_SIZE_MINI);
+			screen_y = MINIMAP_OFFSET + (int)((game->enemies[i].y - player_y
+						+ MINIMAP_RADIUS) * MINIMAP_TILE_SIZE_MINI);
+			mark = -1;
+			while (++mark < 9)
+				put_pixel_to_image(game, screen_x - 1 + (mark % 3),
+					screen_y - 1 + (mark / 3), 0x00FF00);
+		}
+		i++;
 	}
 }
 
@@ -97,25 +103,16 @@ void	render_minimap(t_game *game)
 {
 	int	player_map_x;
 	int	player_map_y;
-	int	center_x;
-	int	center_y;
-	int	coords[2];
+	int	center_idx;
 
 	player_map_x = (int)game->player.x;
 	player_map_y = (int)game->player.y;
 	render_minimap_tiles(game, player_map_x, player_map_y);
-	center_x = MINIMAP_OFFSET + (MINIMAP_RADIUS * MINIMAP_TILE_SIZE_MINI);
-	center_y = MINIMAP_OFFSET + (MINIMAP_RADIUS * MINIMAP_TILE_SIZE_MINI);
-	coords[1] = 0;
-	while (coords[1] < 3)
-	{
-		coords[0] = 0;
-		while (coords[0] < 3)
-		{
-			put_pixel_to_image(game, center_x - 1 + coords[0],
-				center_y - 1 + coords[1], 0xFF0000);
-			coords[0]++;
-		}
-		coords[1]++;
-	}
+	render_minimap_enemies(game, player_map_x, player_map_y);
+	center_idx = -1;
+	while (++center_idx < 9)
+		put_pixel_to_image(game, MINIMAP_OFFSET + MINIMAP_RADIUS
+			* MINIMAP_TILE_SIZE_MINI - 1 + (center_idx % 3), MINIMAP_OFFSET
+			+ MINIMAP_RADIUS * MINIMAP_TILE_SIZE_MINI - 1 + (center_idx / 3),
+			0xFF0000);
 }
