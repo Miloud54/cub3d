@@ -12,62 +12,60 @@
 
 #include "../inc/cub3d.h"
 
+#if BONUS
+
+# define BONUS_ENABLED 1
+
+#else
+
+# define BONUS_ENABLED 0
+
+#endif
+
+static int	is_blocked_cell(t_game *game, int map_x, int map_y)
+{
+	int	row_len;
+
+	if (map_y < 0 || map_y >= game->map_height || map_x < 0)
+		return (1);
+	row_len = (int)ft_strlen(game->map[map_y]);
+	if (map_x >= row_len)
+		return (1);
+	if (game->map[map_y][map_x] == '1')
+		return (1);
+	if (BONUS_ENABLED && game->map[map_y][map_x] == 'D')
+		return (1);
+	if (game->map[map_y][map_x] == ' ' && is_exterior_space(game, map_y,
+			map_x))
+		return (1);
+	return (0);
+}
+
 static int	can_stand(t_game *game, double x, double y)
 {
-	double	offsets[2];
-	int		i;
-	int		j;
-	int		map_x;
-	int		map_y;
-	int		row_len;
+	const double	offsets[2] = {-PLAYER_COLLISION_RADIUS,
+		PLAYER_COLLISION_RADIUS};
+	int				i;
+	int				j;
 
-	offsets[0] = -PLAYER_COLLISION_RADIUS;
-	offsets[1] = PLAYER_COLLISION_RADIUS;
-	i = 0;
-	if (BONUS)
+	if (!BONUS_ENABLED)
 	{
-		while (i < 2)
-		{
-			j = 0;
-			while (j < 2)
-			{
-				map_x = (int)(x + offsets[i]);
-				map_y = (int)(y + offsets[j]);
-				if (map_y < 0 || map_y >= game->map_height || map_x < 0)
-					return (0);
-				if (map_x >= (int)ft_strlen(game->map[map_y]))
-					return (0);
-#if BONUS
-				if (game->map[map_y][map_x] == '1'
-					|| game->map[map_y][map_x] == 'D')
-#else
-				if (game->map[map_y][map_x] == '1')
-#endif
-					return (0);
-				if (game->map[map_y][map_x] == ' ' && is_exterior_space(game,
-						map_y, map_x))
-					return (0);
-				j++;
-			}
-			i++;
-		}
+		if (x < 0.0 || y < 0.0 || y >= game->map_height || x >= game->map_width)
+			return (0);
+		return (!is_blocked_cell(game, (int)x, (int)y));
 	}
-	else
+	i = 0;
+	while (i < 2)
 	{
-		if (x < 0.0 || y < 0.0)
-			return (0);
-		if (y >= game->map_height)
-			return (0);
-		if (x >= game->map_width)
-			return (0);
-		map_y = (int)y;
-		map_x = (int)x;
-		if (map_y >= 0 && map_y < game->map_height)
+		j = 0;
+		while (j < 2)
 		{
-			row_len = (int)ft_strlen(game->map[map_y]);
-			if (map_x >= 0 && map_x < row_len && game->map[map_y][map_x] == '1')
+			if (is_blocked_cell(game, (int)(x + offsets[i]),
+				(int)(y + offsets[j])))
 				return (0);
+			j++;
 		}
+		i++;
 	}
 	return (1);
 }
@@ -106,23 +104,19 @@ void	move_left_right(t_game *game, int right)
 		game->player.y = new_y;
 }
 
-void	rotate_camera(t_game *game, int right)
+void	rotate_camera_angle(t_game *game, double angle)
 {
-	double	rot_speed;
 	double	old_dir_x;
 	double	old_plane_x;
 
-	rot_speed = ROT_SPEED;
-	if (!right)
-		rot_speed = -ROT_SPEED;
 	old_dir_x = game->player.dir_x;
-	game->player.dir_x = game->player.dir_x * cos(rot_speed)
-		- game->player.dir_y * sin(rot_speed);
-	game->player.dir_y = old_dir_x * sin(rot_speed) + game->player.dir_y
-		* cos(rot_speed);
 	old_plane_x = game->player.plane_x;
-	game->player.plane_x = game->player.plane_x * cos(rot_speed)
-		- game->player.plane_y * sin(rot_speed);
-	game->player.plane_y = old_plane_x * sin(rot_speed) + game->player.plane_y
-		* cos(rot_speed);
+	game->player.dir_x = game->player.dir_x * cos(angle) - game->player.dir_y
+		* sin(angle);
+	game->player.dir_y = old_dir_x * sin(angle) + game->player.dir_y
+		* cos(angle);
+	game->player.plane_x = game->player.plane_x * cos(angle)
+		- game->player.plane_y * sin(angle);
+	game->player.plane_y = old_plane_x * sin(angle) + game->player.plane_y
+		* cos(angle);
 }

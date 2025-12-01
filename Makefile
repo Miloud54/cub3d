@@ -25,6 +25,9 @@ SRC			= 	main.c \
 				parsing/parsing_map_storage.c \
 				parsing/parsing_map_utils.c \
 				parsing/parsing_map_validation.c \
+				parsing/parsing_exterior_map.c \
+				parsing/parsing_exterior_utils.c \
+				parsing/parsing_door_validation.c \
 				parsing/parsing_scene_map.c \
 				parsing/parsing_player.c \
 				parsing/parsing_enemies.c \

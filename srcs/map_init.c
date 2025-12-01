@@ -23,13 +23,22 @@ static int	safe_mlx_init(t_game *game)
 	return (1);
 }
 
-static int	init_window(t_game *game)
+static int	allocate_bonus_buffers(t_game *game, int width)
 {
-	int	width;
-	int	height;
+	if (!BONUS)
+	{
+		(void)game;
+		(void)width;
+		return (1);
+	}
+	game->z_buffer = malloc(sizeof(double) * width);
+	if (!game->z_buffer)
+		return (print_error("Failed to allocate z-buffer"));
+	return (1);
+}
 
-	width = WINDOW_WIDTH;
-	height = WINDOW_HEIGHT;
+static int	setup_window_image(t_game *game, int width, int height)
+{
 	game->window = mlx_new_window(game->mlx, width, height, "cub3D");
 	game->win_w = width;
 	game->win_h = height;
@@ -45,11 +54,20 @@ static int	init_window(t_game *game)
 			&game->img_line_len, &game->img_endian);
 	if (!game->img_addr)
 		return (print_error("Failed to access render buffer"));
-#if BONUS
-	game->z_buffer = malloc(sizeof(double) * width);
-	if (!game->z_buffer)
-		return (print_error("Failed to allocate z-buffer"));
-#endif
+	return (1);
+}
+
+static int	init_window(t_game *game)
+{
+	int	width;
+	int	height;
+
+	width = WINDOW_WIDTH;
+	height = WINDOW_HEIGHT;
+	if (!setup_window_image(game, width, height))
+		return (0);
+	if (!allocate_bonus_buffers(game, width))
+		return (0);
 	return (1);
 }
 

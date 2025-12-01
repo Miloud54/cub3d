@@ -6,7 +6,7 @@
 /*   By: edidier <edidier@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:04:16 by bde-la-p          #+#    #+#             */
-/*   Updated: 2025/11/28 13:56:41 by edidier          ###   ########.fr       */
+/*   Updated: 2025/12/01 13:42:23 by edidier          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,17 @@ void	free_textures(t_textures *textures)
 	ft_memset(textures, 0, sizeof(t_textures));
 }
 
-void	cleanup_game(t_game *game)
+#if BONUS
+
+# define BONUS_ENABLED 1
+
+#else
+
+# define BONUS_ENABLED 0
+
+#endif
+
+static void	destroy_graphics(t_game *game)
 {
 	if (game->mlx)
 		destroy_texture_images(game);
@@ -49,21 +59,31 @@ void	cleanup_game(t_game *game)
 		mlx_destroy_window(game->mlx, game->window);
 		game->window = NULL;
 	}
-	if (game->map)
-		free_map(game->map);
-	if (game->exterior_map)
-		free_exterior_map(game->exterior_map, game->map_height);
-#if BONUS
-	if (game->enemies)
-		free(game->enemies);
-	if (game->z_buffer)
-		free(game->z_buffer);
-#endif
 	if (game->mlx)
 	{
 		mlx_destroy_display(game->mlx);
 		free(game->mlx);
 		game->mlx = NULL;
 	}
+}
+
+static void	free_bonus_data(t_game *game)
+{
+	if (!BONUS_ENABLED)
+		return ;
+	if (game->enemies)
+		free(game->enemies);
+	if (game->z_buffer)
+		free(game->z_buffer);
+}
+
+void	cleanup_game(t_game *game)
+{
+	destroy_graphics(game);
+	if (game->map)
+		free_map(game->map);
+	if (game->exterior_map)
+		free_exterior_map(game->exterior_map, game->map_height);
+	free_bonus_data(game);
 	free_textures(&game->textures);
 }
