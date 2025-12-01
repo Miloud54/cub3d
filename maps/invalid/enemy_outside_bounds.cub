@@ -1,0 +1,13 @@
+NO ./textures/wall11.xpm
+SO ./textures/wall17.xpm
+WE ./textures/wall8.xpm
+EA ./textures/wall9.xpm
+
+F 120,60,0
+C 0,80,150
+
+1111111
+1000001
+1M  001
+1000001
+1111111
