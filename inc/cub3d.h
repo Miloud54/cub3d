@@ -28,6 +28,11 @@
 #  define BONUS 1
 # endif
 
+/* Limits */
+# define MAX_MAP_WIDTH 640
+# define MAX_MAP_HEIGHT 480
+# define TILE_SIZE 64
+
 /* Window / controls */
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 720
@@ -212,17 +217,6 @@ typedef struct s_map
 	int				height;
 }					t_map;
 
-typedef struct s_scene
-{
-	t_game			*game;
-	t_list			*map_lines;
-	int				map_started;
-	int				map_height;
-	int				map_width;
-	int				floor_found;
-	int				ceiling_found;
-}					t_scene;
-
 typedef struct s_game
 {
 	void			*mlx;
@@ -259,6 +253,17 @@ typedef struct s_game
 	double			*z_buffer;
 	double			last_frame_time;
 }					t_game;
+
+typedef struct s_scene
+{
+	t_game			*game;
+	t_list			*map_lines;
+	int				map_started;
+	int				map_height;
+	int				map_width;
+	int				floor_found;
+	int				ceiling_found;
+}					t_scene;
 
 typedef struct s_door_search
 {
