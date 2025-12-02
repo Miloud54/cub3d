@@ -238,6 +238,9 @@ jobs:
           name: cub3d-mandatory
           path: .
 
+      - name: Ensure binary is executable
+        run: chmod +x "$BIN"
+
       - name: Install Xvfb
         run: |
           sudo apt-get update
@@ -270,6 +273,9 @@ jobs:
         with:
           name: cub3d-bonus
           path: .
+
+      - name: Ensure binary is executable
+        run: chmod +x "$BIN"
 
       - name: Install Xvfb
         run: |
