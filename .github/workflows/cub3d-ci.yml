@@ -41,17 +41,17 @@ jobs:
 
 
     - name: Show versions
-        run: |
-          uname -a
-          gcc --version || true
-          make --version || true
+      run: |
+        uname -a
+        gcc --version || true
+        make --version || true
 
 
     - name: Clean & Build mandatory
-        run: |
-          make fclean || true
-          make -j$(nproc)
-          test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
+      run: |
+        make fclean || true
+        make -j$(nproc)
+        test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
 
 
     - name: Upload artifacts (mandatory)
@@ -79,10 +79,10 @@ build-bonus:
           libxpm-dev \
           xvfb
     - name: Clean & Build bonus (BONUS=1)
-    run: |
-      make fclean || true
-      make bonus -j$(nproc)
-      test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
+      run: |
+        make fclean || true
+        make bonus -j$(nproc)
+        test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
     - name: Upload artifacts (bonus)
       uses: actions/upload-artifact@v4
       with:
@@ -115,14 +115,14 @@ asan:
   steps:
     - uses: actions/checkout@v4
     - name: Install deps (X11)
-    run: |
-      sudo apt-get update
-      sudo apt-get install -y \
-        build-essential \
-        xorg \
-        libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-        libxpm-dev \
-        xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          xorg \
+          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+          libxpm-dev \
+          xvfb
   - name: Build with ASan (mandatory)
     env:
      ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
@@ -132,9 +132,9 @@ asan:
     - name: Run headless valid map (mandatory)
       env:
         ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
-     run: |
-       chmod +x tests/run_map.sh || true
-       xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_MAP"
+      run: |
+        chmod +x tests/run_map.sh || true
+        xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_MAP"
 
 asan-bonus:
   name: AddressSanitizer (bonus)
@@ -183,12 +183,12 @@ valgrind:
     run: |
       make fclean || true
       make -j$(nproc)
-   - name: Valgrind headless valid map (mandatory)
-      run: |
-        chmod +x tests/run_map.sh || true
-        xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
-          --errors-for-leak-kinds=all --error-exitcode=42 \
-          ./tests/run_map.sh "$BIN" "$VALID_MAP"
+  - name: Valgrind headless valid map (mandatory)
+    run: |
+      chmod +x tests/run_map.sh || true
+      xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
+        --errors-for-leak-kinds=all --error-exitcode=42 \
+        ./tests/run_map.sh "$BIN" "$VALID_MAP"
 
 valgrind-bonus:
   name: Valgrind (bonus)
@@ -210,11 +210,11 @@ valgrind-bonus:
       make fclean || true
       make bonus -j$(nproc)
   - name: Valgrind headless valid map (bonus)
-      run: |
-        chmod +x tests/run_map.sh || true
-        xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
-          --errors-for-leak-kinds=all --error-exitcode=42 \
-          ./tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+    run: |
+      chmod +x tests/run_map.sh || true
+      xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
+        --errors-for-leak-kinds=all --error-exitcode=42 \
+        ./tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
 
 parse-only:
   name: Parser negatives (mandatory)
@@ -227,16 +227,16 @@ parse-only:
         sudo apt-get update
         sudo apt-get install -y xvfb
   - name: Run parser tests on maps/invalid (mandatory)
-      run: |
-        set -e
-        found=0
-        while IFS= read -r m; do
-          found=1
-          echo "Test invalid: $m"
-          # Doit échouer => code != 0
-          xvfb-run -a bash -lc '"$BIN" '"$m"' && exit 1 || exit 0'
-        done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
-        if [ $found -eq 0 ]; then echo "Aucune map invalide trouvée"; exit 1; fi
+    run: |
+      set -e
+      found=0
+      while IFS= read -r m; do
+        found=1
+        echo "Test invalid: $m"
+        # Doit échouer => code != 0
+        xvfb-run -a bash -lc '"$BIN" '"$m"' && exit 1 || exit 0'
+      done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
+      if [ $found -eq 0 ]; then echo "Aucune map invalide trouvée"; exit 1; fi
 
 
 parse-only-bonus:
@@ -250,12 +250,12 @@ parse-only-bonus:
         sudo apt-get update
         sudo apt-get install -y xvfb
   - name: Run bonus valid/invalid samples just to ensure parsing path exists (bonus)
-      run: |
-        set -e
-        # On vérifie au moins que la map bonus valide s'exécute brièvement
-        xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
-        # Puis on parcourt également les maps invalides classiques si bon comportement est partagé
-        while IFS= read -r m; do
-          echo "Test invalid: $m (bonus)"
-          xvfb-run -a bash -lc '"$BIN" '"$m"' && exit 1 || exit 0'
-        done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
+    run: |
+      set -e
+      # On vérifie au moins que la map bonus valide s'exécute brièvement
+      xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+      # Puis on parcourt également les maps invalides classiques si bon comportement est partagé
+      while IFS= read -r m; do
+        echo "Test invalid: $m (bonus)"
+        xvfb-run -a bash -lc '"$BIN" '"$m"' && exit 1 || exit 0'
+      done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
