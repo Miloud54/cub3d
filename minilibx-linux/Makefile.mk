@@ -36,7 +36,8 @@ SRC	= mlx_init.c mlx_new_window.c mlx_pixel_put.c mlx_loop.c \
 
 OBJ_DIR = obj
 OBJ	= $(addprefix $(OBJ_DIR)/,$(SRC:%.c=%.o))
-CFLAGS	= -O3 -I$(INC)
+# Prevent parent CFLAGS (e.g., -Werror) from breaking the MLX build
+CFLAGS	= -Wno-error -O3 -I$(INC)
 
 all	: $(NAME)
 
