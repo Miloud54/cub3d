@@ -75,6 +75,7 @@ int		mlx_int_deal_shm(t_xvar *xvar)
 		xvar->pshm_format = -1;
 		xvar->use_xshm = 0;
 	}
+	return (0);
 }
 
 /*
@@ -96,4 +97,5 @@ int		mlx_int_rgb_conversion(t_xvar *xvar)
 		{ xvar->visual->blue_mask >>= 1; xvar->decrgb[4] ++; }
 	while (xvar->visual->blue_mask&1)
 		{ xvar->visual->blue_mask >>= 1; xvar->decrgb[5] ++; }
+	return (0);
 }
