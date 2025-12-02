@@ -232,6 +232,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cub3d-mandatory
+          path: .
+
       - name: Install Xvfb
         run: |
           sudo apt-get update
@@ -258,6 +264,12 @@ jobs:
     needs: build-bonus
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cub3d-bonus
+          path: .
 
       - name: Install Xvfb
         run: |
