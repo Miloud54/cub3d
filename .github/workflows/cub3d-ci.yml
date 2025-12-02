@@ -1,17 +1,14 @@
 name: cub3D CI
 
-
 on:
   push:
     branches: ["main"]
   pull_request:
-  branches: ["main"]
-
+    branches: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 
 env:
   CC: gcc
@@ -20,242 +17,263 @@ env:
   VALID_MAP: maps/valid/map1.cub
   VALID_BONUS_MAP: maps/bonus/map1_bonus.cub
 
-
 jobs:
   build:
     name: Build (mandatory)
     runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Install build deps (MiniLibX Linux / X11)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            xorg \
+            libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+            libxpm-dev \
+            valgrind xvfb
 
-    - name: Install build deps (MiniLibX Linux / X11)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          xorg \
-          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-          libxpm-dev \
-          valgrind xvfb
+      - name: Show versions
+        run: |
+          uname -a
+          gcc --version || true
+          make --version || true
 
+      - name: Clean & Build mandatory
+        run: |
+          make fclean || true
+          make -j$(nproc)
+          test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
 
-    - name: Show versions
-      run: |
-        uname -a
-        gcc --version || true
-        make --version || true
+      - name: Upload artifacts (mandatory)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cub3d-mandatory
+          path: |
+            ${{ env.BIN }}
+            objs/**
+          if-no-files-found: warn
 
+  build-bonus:
+    name: Build (bonus)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Clean & Build mandatory
-      run: |
-        make fclean || true
-        make -j$(nproc)
-        test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
+      - name: Install build deps (MiniLibX Linux / X11)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            xorg \
+            libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+            libxpm-dev \
+            xvfb
 
+      - name: Clean & Build bonus (BONUS=1)
+        run: |
+          make fclean || true
+          make bonus -j$(nproc)
+          test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
 
-    - name: Upload artifacts (mandatory)
-      uses: actions/upload-artifact@v4
-      with:
-        name: cub3d-mandatory
-        path: |
-          ${{ env.BIN }}
-          objs/**
-        if-no-files-found: warn
+      - name: Upload artifacts (bonus)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cub3d-bonus
+          path: |
+            ${{ env.BIN }}
+            objs_bonus/**
+          if-no-files-found: warn
 
+  norminette:
+    name: Norminette (42 style)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-build-bonus:
-  name: Build (bonus)
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install build deps (MiniLibX Linux / X11)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          xorg \
-          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-          libxpm-dev \
-          xvfb
-    - name: Clean & Build bonus (BONUS=1)
-      run: |
-        make fclean || true
-        make bonus -j$(nproc)
-        test -x "$BIN" || { echo "Binaire $BIN introuvable"; ls -la; exit 2; }
-    - name: Upload artifacts (bonus)
-      uses: actions/upload-artifact@v4
-      with:
-        name: cub3d-bonus
-        path: |
-          ${{ env.BIN }}
-          objs_bonus/**
-      if-no-files-found: warn
-    
-norminette:
-  name: Norminette (42 style)
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - name: Setup Python & Norminette
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
-  - name: Install norminette
-    run: pip install norminette
-  - name: Run norminette (inc + srcs uniquement)
-    run: |
-      norminette inc srcs | tee norminette.log
-      if grep -q "Error:" norminette.log; then exit 1; fi
+      - name: Setup Python & Norminette
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
 
-asan:
-  name: AddressSanitizer (mandatory)
-  runs-on: ubuntu-latest
-  needs: build
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install deps (X11)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          xorg \
-          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-          libxpm-dev \
-          xvfb
-  - name: Build with ASan (mandatory)
-    env:
-     ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
-    run: |
-      make fclean || true
-      make CFLAGS+=" -g3 -fsanitize=address" LDFLAGS+=" -fsanitize=address" -j$(nproc)
-    - name: Run headless valid map (mandatory)
-      env:
-        ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
-      run: |
-        chmod +x tests/run_map.sh || true
-        xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_MAP"
+      - name: Install norminette
+        run: pip install norminette
 
-asan-bonus:
-  name: AddressSanitizer (bonus)
-  runs-on: ubuntu-latest
-  needs: build-bonus
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install deps (X11)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          xorg \
-          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-          libxpm-dev \
-          xvfb
-  - name: Build with ASan (bonus)
-    env:
-     ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
-    run: |
-      make fclean || true
-      make bonus CFLAGS+=" -g3 -fsanitize=address" LDFLAGS+=" -fsanitize=address" -j$(nproc)
-  - name: Run headless valid map (bonus)
-    env:
-      ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
-    run: |
-      chmod +x tests/run_map.sh || true
-      xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+      - name: Run norminette (inc + srcs uniquement)
+        run: |
+          norminette inc srcs | tee norminette.log
+          if grep -q "Error:" norminette.log; then exit 1; fi
 
-valgrind:
-  name: Valgrind (mandatory)
-  runs-on: ubuntu-latest
-  needs: build
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install deps (X11 + Valgrind)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          xorg \
-          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-          libxpm-dev \
-          valgrind xvfb
-  - name: Build (mandatory)
-    run: |
-      make fclean || true
-      make -j$(nproc)
-  - name: Valgrind headless valid map (mandatory)
-    run: |
-      chmod +x tests/run_map.sh || true
-      xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
-        --errors-for-leak-kinds=all --error-exitcode=42 \
-        ./tests/run_map.sh "$BIN" "$VALID_MAP"
+  asan:
+    name: AddressSanitizer (mandatory)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
 
-valgrind-bonus:
-  name: Valgrind (bonus)
-  runs-on: ubuntu-latest
-  needs: build-bonus
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install deps (X11 + Valgrind)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          xorg \
-          libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
-          libxpm-dev \
-          valgrind xvfb
-  - name: Build (bonus)
-    run: |
-      make fclean || true
-      make bonus -j$(nproc)
-  - name: Valgrind headless valid map (bonus)
-    run: |
-      chmod +x tests/run_map.sh || true
-      xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
-        --errors-for-leak-kinds=all --error-exitcode=42 \
-        ./tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+      - name: Install deps (X11)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            xorg \
+            libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+            libxpm-dev \
+            xvfb
 
-parse-only:
-  name: Parser negatives (mandatory)
-  runs-on: ubuntu-latest
-  needs: build
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install Xvfb
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb
-  - name: Run parser tests on maps/invalid (mandatory)
-    run: |
-      set -e
-      found=0
-      while IFS= read -r m; do
-        found=1
-        echo "Test invalid: $m"
-        # Doit échouer => code != 0
-        xvfb-run -a bash -lc '"$BIN" '"$m"' && exit 1 || exit 0'
-      done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
-      if [ $found -eq 0 ]; then echo "Aucune map invalide trouvée"; exit 1; fi
+      - name: Build with ASan (mandatory)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
+        run: |
+          make fclean || true
+          make CFLAGS+=" -g3 -fsanitize=address" LDFLAGS+=" -fsanitize=address" -j$(nproc)
 
+      - name: Run headless valid map (mandatory)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
+        run: |
+          chmod +x tests/run_map.sh || true
+          xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_MAP"
 
-parse-only-bonus:
-  name: Parser negatives (bonus)
-  runs-on: ubuntu-latest
-  needs: build-bonus
-  steps:
-    - uses: actions/checkout@v4
-    - name: Install Xvfb
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb
-  - name: Run bonus valid/invalid samples just to ensure parsing path exists (bonus)
-    run: |
-      set -e
-      # On vérifie au moins que la map bonus valide s'exécute brièvement
-      xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
-      # Puis on parcourt également les maps invalides classiques si bon comportement est partagé
-      while IFS= read -r m; do
-        echo "Test invalid: $m (bonus)"
-        xvfb-run -a bash -lc '"$BIN" '"$m"' && exit 1 || exit 0'
-      done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
+  asan-bonus:
+    name: AddressSanitizer (bonus)
+    runs-on: ubuntu-latest
+    needs: build-bonus
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps (X11)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            xorg \
+            libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+            libxpm-dev \
+            xvfb
+
+      - name: Build with ASan (bonus)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
+        run: |
+          make fclean || true
+          make bonus CFLAGS+=" -g3 -fsanitize=address" LDFLAGS+=" -fsanitize=address" -j$(nproc)
+
+      - name: Run headless valid map (bonus)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:symbolize=1
+        run: |
+          chmod +x tests/run_map.sh || true
+          xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+
+  valgrind:
+    name: Valgrind (mandatory)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps (X11 + Valgrind)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            xorg \
+            libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+            libxpm-dev \
+            valgrind xvfb
+
+      - name: Build (mandatory)
+        run: |
+          make fclean || true
+          make -j$(nproc)
+
+      - name: Valgrind headless valid map (mandatory)
+        run: |
+          chmod +x tests/run_map.sh || true
+          xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
+            --errors-for-leak-kinds=all --error-exitcode=42 \
+            ./tests/run_map.sh "$BIN" "$VALID_MAP"
+
+  valgrind-bonus:
+    name: Valgrind (bonus)
+    runs-on: ubuntu-latest
+    needs: build-bonus
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps (X11 + Valgrind)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            xorg \
+            libx11-dev libxext-dev libbsd-dev libxrandr-dev libxinerama-dev \
+            libxpm-dev \
+            valgrind xvfb
+
+      - name: Build (bonus)
+        run: |
+          make fclean || true
+          make bonus -j$(nproc)
+
+      - name: Valgrind headless valid map (bonus)
+        run: |
+          chmod +x tests/run_map.sh || true
+          xvfb-run -a valgrind --leak-check=full --show-leak-kinds=all \
+            --errors-for-leak-kinds=all --error-exitcode=42 \
+            ./tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+
+  parse-only:
+    name: Parser negatives (mandatory)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Run parser tests on maps/invalid (mandatory)
+        run: |
+          set -e
+          found=0
+          while IFS= read -r m; do
+            found=1
+            echo "Test invalid: $m"
+            # Le binaire doit échouer sur les maps invalides
+            if xvfb-run -a "$BIN" "$m"; then
+              echo "Map invalide acceptée: $m"
+              exit 1
+            fi
+          done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
+          if [ $found -eq 0 ]; then echo "Aucune map invalide trouvée"; exit 1; fi
+
+  parse-only-bonus:
+    name: Parser negatives (bonus)
+    runs-on: ubuntu-latest
+    needs: build-bonus
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Run bonus valid/invalid samples just to ensure parsing path exists (bonus)
+        run: |
+          set -e
+          # On vérifie au moins que la map bonus valide s'exécute brièvement
+          xvfb-run -a bash tests/run_map.sh "$BIN" "$VALID_BONUS_MAP"
+          # Puis on parcourt également les maps invalides classiques si bon comportement est partagé
+          while IFS= read -r m; do
+            echo "Test invalid: $m (bonus)"
+            if xvfb-run -a "$BIN" "$m"; then
+              echo "Map invalide acceptée: $m"
+              exit 1
+            fi
+          done < <(find maps/invalid -maxdepth 1 -type f -name "*.cub" | sort)
