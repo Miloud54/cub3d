@@ -4,7 +4,7 @@ A raycasting engine written in C, rendering a first-person 3D view of a 2D map w
 
 ## 📋 Description
 
-**cub3D** parses a custom `.cub` map/config file describing wall textures, floor/ceiling colors, and a 2D map layout, then renders it in real time from the player's point of view using raycasting (DDA algorithm). The player can move and rotate freely inside the map, with textured walls, a minimap, and — in the bonus part — doors and enemy sprites.
+**cub3D** parses a custom `.cub` map/config file describing wall textures, floor/ceiling colors, and a 2D map layout, then renders it in real time from the player's point of view using raycasting (DDA algorithm). The player can move and rotate freely inside the map, with textured walls, a minimap, and in the bonus part, doors and enemy sprites.
 
 ## 🎮 Features
 
